@@ -15,12 +15,37 @@
 using namespace Eigen;
 int main(int argc, const char * argv[])
 {
-    //hardycpp *d = new hardycpp::hardycpp("/Users/nfrik/Documents/LAMMPS/work/couette_flow_git/flow.hpcvel.17.txt");
+    hardycpp *d = new hardycpp::hardycpp("/Users/nfrik/Documents/LAMMPS/work/couette_flow_git/flow.hpcvel.17.txt");
     
-    MatrixXd m=MatrixXd::Constant(3, 3, 5);
-    VectorXd v(3);
-    v << 1,2,3;
-    cout<<m*v<<endl;
+    MatrixXd data;
+    d->getBodyHeadTail2Matrix(data, 0, 0.1);
+    
+    //vector<double> x;
+    
+    
+    d->plot(data.col(1).data(), data.col(2).data(), (int)data.col(2).size());
+//    MatrixXd m(3,3);
+//    m<<1,2,3,
+//       4,5,6,
+//        7,8,9;
+//    VectorXd v(3),b;
+//    v << 1,2,3;
+//    
+//    vector<vector<double>> s;
+//    s.resize(2);
+//    s[0].resize(2);
+//    s[1].resize(2);
+//    s[0][0]=1;
+//    s[1][0]=2;
+//    s[0][1]=3;
+//    s[1][1]=4;
+//    cout<<s.size()*s[0].size()<<endl;
+//    Map<MatrixXd> mymat(&s[0][0],2,2);
+//    cout<<mymat<<endl;
+//    b=v;
+//    b.transposeInPlace();
+    //cout<<m.cwiseQuotient(m.transpose().eval())<<endl;
+    
 //    vector<vector<int>> d;
 //    
 //    d.resize(10);
@@ -39,7 +64,6 @@ int main(int argc, const char * argv[])
 //    std::cout<<"Lower bound"<<*low<<endl;
 //    std::cout<<"Upper bound"<<*up<<endl;
     
-    std::vector<vector<int>>::iterator row;
     
     //int n=5;
     
@@ -48,7 +72,7 @@ int main(int argc, const char * argv[])
 
     
     
-    //delete d;
+    delete d;
     
     return 0;
 }

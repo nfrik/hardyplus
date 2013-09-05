@@ -15,14 +15,17 @@
 #include <stdlib.h>
 #include <math.h>
 #include <Eigen/Dense>
+#include <Eigen/Geometry>
 #include <Eigen/Core>
+
+using namespace Eigen;
 
 hardycpp::hardycpp(const char *path){
     
     
     this->readRawDataFromFile(path);//read file to wdata
     
-    this->run(10000,10,10,1);//run 10000'th frame with 10x10x1 mesh grid
+    //this->run(10000,10,10,1);//run 10000'th frame with 10x10x1 mesh grid
     
 }
 
@@ -56,10 +59,10 @@ void hardycpp::run(int time, int dargx, int dargy, int dargz){
     //1***************2%     %2***************1%
     //---------------------------
     
-    vector<int> headIndxs=findindxs(true, time, 1.0-rcx, 1.0, -INFINITY, INFINITY, -INFINITY, INFINITY);
-    vector<int> tailIndxs=findindxs(true, time, 0.0, rcx, -INFINITY, INFINITY, -INFINITY, INFINITY);
     
-    
+    MatrixXd data;
+    getBodyHeadTail2Matrix(data, time, rcx);
+
     for (int i=1; i<=dargx; i++) {
         for (int j=1; j<=dargy; j++) {
             for (int k=1; k<=dargz; k++) {
@@ -186,12 +189,63 @@ vector<int>  hardycpp::findindxs(bool scaled, int time,double xmin, double xmax,
     else
     for (i=start; i<end; i++) {
         if ((xmin<=wdata[i][7])&&(wdata[i][7]<=xmax)&&(ymin<=wdata[i][8])&&(wdata[i][8]<=ymax)&&(zmin<=wdata[i][9])&&(wdata[i][9]<=zmax)) {
-            indexes.push_back(i);
-            
+            indexes.push_back(i);            
         }
     }
     
     return indexes;
+}
+
+//Function assembles particles within cutoff range from left and right borders and returns it through matrix argument
+//Matrix returned through input argument m,
+//rcx - is a cutoff distance of lj potential
+void hardycpp::getBodyHeadTail2Matrix(Eigen::MatrixXd &m,int time,double rcx){
+    vector<int> indexHead;
+    vector<int> indexTail;
+    int i; //timestep by default is scale of 1000
+    const int start=time/sdata.timestep*sdata.natoms;
+    const int end=(time/sdata.timestep+1)*sdata.natoms;
+    
+//    vector<int> headIndxs=findindxs(true, time, 1.0-rcx, 1.0, -INFINITY, INFINITY, -INFINITY, INFINITY);
+//    vector<int> tailIndxs=findindxs(true, time, 0.0, rcx, -INFINITY, INFINITY, -INFINITY, INFINITY);
+    
+    for (i=start; i<end; i++) {
+        if ((1.0-rcx<=wdata[i][1])&&(wdata[i][1]<=1.0))
+            indexHead.push_back(i);
+        else if((0.0<=wdata[i][1])&&(wdata[i][1]<=rcx))
+            indexTail.push_back(i);
+    }
+    
+    unsigned long size=(indexHead.size()+indexTail.size()+end-start);
+    
+    m.resize(size, 11);
+    
+    int j=0;
+    
+//    head(:,2)=head(:,2)-1;
+//    head(:,8)=head(:,8)-(sdata(1,2)-sdata(1,1));
+//    tail(:,2)=tail(:,2)+1;
+//    tail(:,8)=tail(:,8)+(sdata(1,2)-sdata(1,1));
+    
+    VectorXd headtailFix(11);
+    headtailFix<<0,1,0,0,0,0,0,(sdata.xmax-sdata.xmin),0,0,0;
+    
+    //piecewize initialization
+    for (unsigned long i=start; i<end; i++) {
+        m.row(j)=VectorXd::Map(&wdata[i][0], 11);
+        j++;
+    }
+    
+    for(unsigned long i=0;i<indexHead.size();i++){
+        m.row(j)=VectorXd::Map(&wdata[indexHead[i]][0], 11)-headtailFix;
+        j++;
+    }
+    
+    for(unsigned long i=0;i<indexTail.size();i++){
+        m.row(j)=VectorXd::Map(&wdata[indexTail[i]][0], 11)+headtailFix;
+        j++;
+    }
+    
 }
 
 void hardycpp::test(){
@@ -212,7 +266,7 @@ void hardycpp::test(){
     delete []xData;
 }
 
-void hardycpp::plot(double *xData,double *yData,int dataSize){
+void hardycpp::plot(const double *xData,const double *yData,int dataSize){
     FILE *gnuplotPipe,*tempDataFile;
     string tempDataFileName;
     double x,y,r;
@@ -221,7 +275,7 @@ void hardycpp::plot(double *xData,double *yData,int dataSize){
     gnuplotPipe = popen("/opt/local/bin/gnuplot","w");
     if (gnuplotPipe) {
         fprintf(gnuplotPipe, "set title \"Flow Region\" \n");
-        fprintf(gnuplotPipe,"plot \"%s\" with circles lw 0.3\n",tempDataFileName.c_str());
+        fprintf(gnuplotPipe,"plot \"%s\" with points \n",tempDataFileName.c_str());
         fflush(gnuplotPipe);
         tempDataFile = fopen(tempDataFileName.c_str(),"w");
         for (i=0; i <= dataSize; i++) {

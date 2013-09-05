@@ -11,6 +11,7 @@
 
 #include <iostream>
 #include <vector>
+#include <Eigen/Dense>
 
 #endif /* defined(__hardyplus__hardycpp__) */
 
@@ -30,11 +31,11 @@ public:
     void test();
     void run(int time,int dargx, int dagy, int dargz);
     vector<int> findindxs(bool scaled, int time, double xmin, double xmax, double ymin, double ymax, double zmin, double zmax);
-    
+    void getBodyHeadTail2Matrix(Eigen::MatrixXd &m,int time, double rcx);
+    void plot(const double *xData, const double *yData,int dataSize);
     int k;
 private:
     simdata sdata;
-    void plot(double *xData,double *yData,int dataSize);
     void readRawDataFromFile(const char *str);
     vector<vector<double>> wdata; //whole data
     vector<int> inatomsindx;
