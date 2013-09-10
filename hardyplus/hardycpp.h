@@ -30,10 +30,24 @@ public:
     ~ hardycpp();
     void test();
     void run(int time,int dargx, int dagy, int dargz);
+    
+    //move this function to private after testing
     vector<int> findindxs(bool scaled, int time, double xmin, double xmax, double ymin, double ymax, double zmin, double zmax);
     void getBodyHeadTail2Matrix(Eigen::MatrixXd &m,int time, double rcx);
+
+    //All address variables are output ones
+    void getInsideAtoms(const Eigen::MatrixXd &data, Eigen::MatrixXd &atoms, bool scaled, double xmin, double xmax, double ymin, double ymax, double zmin, double zmax);
+    void getOutsideAtoms(const Eigen::MatrixXd &data, Eigen::MatrixXd &atoms, bool scaled, double xmin, double xmax, double ymin, double ymax, double zmin, double zmax, double rcx, double rcy, double rcz);
+    void neighborList(const Eigen::MatrixXd &InsidersIn, const Eigen::MatrixXd &OutsidersIn, Eigen::MatrixXd &phiOut, Eigen::MatrixXd &FxOut, Eigen::MatrixXd &FyOut, Eigen::MatrixXd &FzOut,
+                      Eigen::MatrixXd &xijOut, Eigen::MatrixXd &yijOut, Eigen::MatrixXd &zijOut, Eigen::MatrixXd &lamOut);
+    void stresskinetic(const Eigen::MatrixXd &InsidersIn, double avvxIn, double avvyIn, double avvzIn, double volIn, Eigen::MatrixXd &SkOut);
+    void stresspotential(const Eigen::MatrixXd &FxIn, const Eigen::MatrixXd &FyIn, const Eigen::MatrixXd &FzIn,
+                   const Eigen::MatrixXd &xijIn, const Eigen::MatrixXd &yijIn, const Eigen::MatrixXd &zijIn, const Eigen::MatrixXd &lamIn, double volIn, Eigen::MatrixXd &SpOut);
+    
+    
+    
     void plot(const double *xData, const double *yData,int dataSize);
-    int k;
+    
 private:
     simdata sdata;
     void readRawDataFromFile(const char *str);

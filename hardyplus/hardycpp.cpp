@@ -15,8 +15,6 @@
 #include <stdlib.h>
 #include <math.h>
 #include <Eigen/Dense>
-#include <Eigen/Geometry>
-#include <Eigen/Core>
 
 using namespace Eigen;
 
@@ -248,6 +246,92 @@ void hardycpp::getBodyHeadTail2Matrix(Eigen::MatrixXd &m,int time,double rcx){
     
 }
 
+void hardycpp::getInsideAtoms(const Eigen::MatrixXd &data, Eigen::MatrixXd &atoms, bool scaled, double xmin, double xmax, double ymin, double ymax, double zmin, double zmax){
+
+    vector <int> indexes;
+    long end=data.rows();
+    int i; //timestep by default is scale of 1000
+
+    data(0,1);
+    
+    if (scaled)//select what coordinates we need
+        for (i=0; i<end; i++) {
+            if ((xmin<=data(i,1))&&(data(i,1)<=xmax)&&(ymin<=data(i,2))&&(data(i,2)<=ymax)&&(zmin<=data(i,3))&&(data(i,3)<=zmax)) {
+                indexes.push_back(i);
+            }
+        }
+    else
+        for (i=0; i<end; i++) {
+            if ((xmin<=data(i,7))&&(data(i,7)<=xmax)&&(ymin<=data(i,8))&&(data(i,8)<=ymax)&&(zmin<=data(i,9))&&(data(i,9)<=zmax)) {
+                indexes.push_back(i);
+            }
+        }
+    
+    end=indexes.size();
+    atoms.resize(end, 11);
+    for (i=0; i<end; i++) {
+//        for (int j=0; j<11; j++) {
+//            atoms(i,j)=data(indexes[i],j);
+//        }
+        atoms.row(i)=data.row(indexes[i]);
+        cout<<atoms.row(i)<<endl;
+    }
+    
+}
+
+void hardycpp::getOutsideAtoms(const Eigen::MatrixXd &data, Eigen::MatrixXd &atoms, bool scaled, double xmin, double xmax, double ymin, double ymax, double zmin, double zmax, double rcx, double rcy, double rcz){
+    
+    vector <int> indexes;
+    long end=data.rows();
+    int i; //timestep by default is scale of 1000
+    
+    //data(0,1);
+    
+    if (scaled)//select what coordinates we need
+        for (i=0; i<end; i++) {
+            ///Not a 3D case!!!!
+            if (((xmin-rcx<=data(i,1))&&(data(i,1)<=xmin)&&(ymin-rcy<=data(i,2))&&(data(i,2)<=ymax+rcy))||
+                ((xmax<=data(i,1))&&(data(i,1)<=xmax+rcx)&&(ymin-rcy<=data(i,2))&&(data(i,2)<=ymax+rcy))||
+                ((xmin<data(i,1))&&(data(i,1)<xmax)&&(ymin-rcy<=data(i,2))&&(data(i,2)<=ymin))||
+                ((xmin<data(i,1))&&(data(i,1)<xmax)&&(ymax<=data(i,2))&&(data(i,2)<=ymax+rcy))) {
+                
+                indexes.push_back(i);
+            }
+            
+            
+        }
+    else{
+        cout<<"Error in getOutsideAtoms(...) can't locate atoms in unscaled region"<<endl;
+        exit(1);
+    }
+    
+    end=indexes.size();
+    atoms.resize(end, 11);
+    for (i=0; i<end; i++) {
+//        for (int j=0; j<11; j++) {
+//            atoms(i,j)=data(indexes[i],j);
+//        }
+        atoms.row(i)=data.row(indexes[i]);
+        cout<<atoms.row(i)<<endl;
+    }
+    
+}
+
+void hardycpp::neighborList(const Eigen::MatrixXd &InsidersIn, const Eigen::MatrixXd &OutsidersIn, Eigen::MatrixXd &phiOut, Eigen::MatrixXd &FxOut, Eigen::MatrixXd &FyOut, Eigen::MatrixXd &FzOut,
+                  Eigen::MatrixXd &xijOut, Eigen::MatrixXd &yijOut, Eigen::MatrixXd &zijOut, Eigen::MatrixXd &lamOut){
+    
+}
+
+void hardycpp::stresskinetic(const Eigen::MatrixXd &InsidersIn, double avvxIn, double avvyIn, double avvzIn, double volIn, Eigen::MatrixXd &SkOut){
+    
+}
+
+void hardycpp::stresspotential(const Eigen::MatrixXd &FxIn, const Eigen::MatrixXd &FyIn, const Eigen::MatrixXd &FzIn,
+                     const Eigen::MatrixXd &xijIn, const Eigen::MatrixXd &yijIn, const Eigen::MatrixXd &zijIn, const Eigen::MatrixXd &lamIn, double volIn, Eigen::MatrixXd &SpOut){
+    
+}
+
+
 void hardycpp::test(){
     
     cout<<"Natoms: "<<sdata.natoms<<"\nxmin xmax: "<<sdata.xmin<<" "<<sdata.xmax<<"\nymin ymax: "<<sdata.ymin<<" "<<sdata.ymax<<"\nzmin zmax: "<<sdata.zmin<<" "<<sdata.zmax<<endl;
@@ -270,7 +354,6 @@ void hardycpp::plot(const double *xData,const double *yData,int dataSize){
     FILE *gnuplotPipe,*tempDataFile;
     string tempDataFileName;
     double x,y,r;
-    int i;
     tempDataFileName = "tempData";
     gnuplotPipe = popen("/opt/local/bin/gnuplot","w");
     if (gnuplotPipe) {
@@ -278,7 +361,7 @@ void hardycpp::plot(const double *xData,const double *yData,int dataSize){
         fprintf(gnuplotPipe,"plot \"%s\" with points \n",tempDataFileName.c_str());
         fflush(gnuplotPipe);
         tempDataFile = fopen(tempDataFileName.c_str(),"w");
-        for (i=0; i <= dataSize; i++) {
+        for (int i=0; i <= dataSize; i++) {
             x = xData[i];
             y = yData[i];
             r = 0.3;

@@ -18,19 +18,27 @@ int main(int argc, const char * argv[])
     hardycpp *d = new hardycpp::hardycpp("/Users/nfrik/Documents/LAMMPS/work/couette_flow_git/flow.hpcvel.17.txt");
     
     MatrixXd data;
-    d->getBodyHeadTail2Matrix(data, 0, 0.1);
+    MatrixXd insiders;
+    MatrixXd outsiders;
+    d->getBodyHeadTail2Matrix(data, 1000, 0.1);
+//    d->getInsideAtoms(data, insiders, true, 0.1, 0.3, 0.1, 0.3, -INFINITY, INFINITY);
+    d->getOutsideAtoms(data, outsiders, true, 0.1, 0.3, 0.1, 0.3, -INFINITY, INFINITY, 0.1, 0.1, 0.1);
+//    
+//
+//    
+    d->plot(outsiders.col(1).data(), outsiders.col(2).data(), (int)outsiders.col(2).size());
+
     
-    //vector<double> x;
-    
-    
-    d->plot(data.col(1).data(), data.col(2).data(), (int)data.col(2).size());
 //    MatrixXd m(3,3);
 //    m<<1,2,3,
 //       4,5,6,
 //        7,8,9;
+//    
+//    cout<<m.cols()<<endl;
+//    
 //    VectorXd v(3),b;
 //    v << 1,2,3;
-//    
+//
 //    vector<vector<double>> s;
 //    s.resize(2);
 //    s[0].resize(2);
