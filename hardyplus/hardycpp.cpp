@@ -15,6 +15,8 @@
 #include <stdlib.h>
 #include <math.h>
 #include <Eigen/Dense>
+#include "interactions.h"
+#include "plotter.h"
 
 using namespace Eigen;
 
@@ -32,7 +34,7 @@ hardycpp::~hardycpp(){
 }
 
 void hardycpp::run(int time, int dargx, int dargy, int dargz){
-    cout<<"Natoms: "<<sdata.natoms<<"\nxmin xmax: "<<sdata.xmin<<" "<<sdata.xmax<<"\nymin ymax: "<<sdata.ymin<<" "<<sdata.ymax<<"\nzmin zmax: "<<sdata.zmin<<" "<<sdata.zmax<<endl;
+//    cout<<"Natoms: "<<sdata.natoms<<"\nxmin xmax: "<<sdata.xmin<<" "<<sdata.xmax<<"\nymin ymax: "<<sdata.ymin<<" "<<sdata.ymax<<"\nzmin zmax: "<<sdata.zmin<<" "<<sdata.zmax<<endl;
     
     //wee need to compensate atom coordinates because of removal of walls
     double yclo=0.06675+0.00001;
@@ -46,7 +48,9 @@ void hardycpp::run(int time, int dargx, int dargy, int dargz){
     double rcy=rc/(sdata.ymax-sdata.ymin);
     double rcz=rc/(sdata.zmax-sdata.zmin);
     
-    double sxlo,sylo,szlo,sxhi,syhi,szhi,dx,dy,dz,xlo,xhi,ylo,yhi,zlo,zhi,dsx,dsy,dsz,vol;
+    double sxlo,sylo,szlo,sxhi,syhi,szhi,dx,dy,dz,xlo,xhi,ylo,yhi,zlo,zhi,dsx,dsy,dsz;
+    double tmass,tvx,tvy,tvz, tpx, tpy, tpz, rho,vol;
+    long    tN; //number of particles
     
     //data preprocessing
     //pad data with tail and head in x direction
@@ -57,19 +61,20 @@ void hardycpp::run(int time, int dargx, int dargy, int dargz){
     //1***************2%     %2***************1%
     //---------------------------
     
+    plotter plotter;
     
-    MatrixXd data;
-    getBodyHeadTail2Matrix(data, time, rcx);
-
+    MatrixXd data, U, Fx, Fy, Fz, xij, yij, zij, lam, inatoms, outatoms, Sk, Sv;
+    getBodyHeadTail2Matrix(data, time, rcx);//Glue data from tail to head
+    
     for (int i=1; i<=dargx; i++) {
         for (int j=1; j<=dargy; j++) {
             for (int k=1; k<=dargz; k++) {
-                sxlo=(j-1)/dargx;
-                sylo=(i-1)*dely/dargy+yclo;
-                szlo=(k-1)/dargz;
-                sxhi=(j)/dargx;
-                syhi=(i)*dely/dargy+yclo;
-                szhi=(k)/dargz;
+                sxlo=(j-1.0)/dargx;
+                sylo=(i-1.0)*dely/dargy+yclo;
+                szlo=(k-1.0)/dargz;
+                sxhi=j*1.0/dargx;
+                syhi=i*dely*1.0/dargy+yclo;
+                szhi=k*1.0/dargz;
                 
                 dx=(sdata.xmax-sdata.xmin)*(sxhi-sxlo);
                 dy=(sdata.ymax-sdata.ymin)*(syhi-sylo);
@@ -89,9 +94,55 @@ void hardycpp::run(int time, int dargx, int dargy, int dargz){
                 
                 vol=dx*dy*dz;
                 
-                vector<int> inatoms=findindxs(true, time, sxlo, sxhi, sylo, syhi, szlo, szhi);
-                vector<int> outatoms=findindxs(true, time, sxlo-rcx, sxhi+rcx, sylo-rcy, syhi+rcy, szlo-rcz, szlo+rcz);
+                //vector<int> inatoms=findindxs(true, time, sxlo, sxhi, sylo, syhi, szlo, szhi);
+                //vector<int> outatoms=findindxs(true, time, sxlo-rcx, sxhi+rcx, sylo-rcy, syhi+rcy, szlo-rcz, szlo+rcz);
+
+                getBodyHeadTail2Matrix(data, time, rcx);
+                getInsideAtoms(data, inatoms, true, sxlo, sxhi, sylo, syhi, -INFINITY, INFINITY);
+                getOutsideAtoms(data, outatoms, true, sxlo, sxhi, sylo, syhi, -INFINITY, INFINITY, rcx, rcy, rcz);
                 
+                neighborList(inatoms, outatoms, U, Fx, Fy, Fz, xij, yij, zij, lam);
+                
+                tN=inatoms.col(10).size();   //total number of particles
+                tmass=inatoms.col(10).sum(); //total mass
+                tvx=inatoms.col(4).sum()/tN; //average velocity
+                tvy=inatoms.col(5).sum()/tN; //average velocity
+                tvz=inatoms.col(6).sum()/tN; //average velocity
+                rho=tmass/vol; //density
+                
+                tpx=tmass*tvx/vol;
+                tpy=tmass*tvy/vol;
+                tpz=tmass*tvz/vol;
+                
+                stresskinetic(inatoms, tvx, tvy, tvz, vol, Sk);
+                stresspotential(Fx, Fy, Fz, xij, yij, zij, lam, vol, Sv);
+                
+                cout<<"Pxy for cell["<<i<<"]["<<j<<"] = "<<(Sk+Sv).row(0).col(0)<<endl;
+//                //calculate total values of [mass vx vy vz] for 2d box
+//                totals=sum(psiatoms(:,[11 5 6 7]));
+//
+//                //calculate number of particles
+//                NN=length(psiatoms(:,1));
+//                
+//                //separate calculated values
+//                totmass=totals(1);
+//                avevelx=totals(2)/NN;
+//                avevely=totals(3)/NN;
+//                avevelz=totals(4)/NN;
+//                
+//                //find density
+//                rho=(totmass/vol);
+//                
+//                //find momentum
+//                momx=totmass*avevelx/(vol);
+//                momy=totmass*avevely/(vol);
+//                momz=totmass*avevelz/(vol);
+                
+//               plot(inatoms.col(1).data(), inatoms.col(2).data(), (int)inatoms.col(2).size());
+//
+//               plot(outatoms.col(1).data(), outatoms.col(2).data(), (int)outatoms.col(2).size());
+                
+                //neighborList(inatoms, outatoms, U, Fx, Fy, Fz, xij, yij, zij, lam);
                 
             }
         }
@@ -194,6 +245,17 @@ vector<int>  hardycpp::findindxs(bool scaled, int time,double xmin, double xmax,
     return indexes;
 }
 
+void hardycpp::findatoms(Eigen::MatrixXd &atoms,bool scaled, int time, double xmin, double xmax, double ymin, double ymax, double zmin, double zmax){
+    vector<int> indexes=findindxs(scaled, time, xmin, xmax, ymin, ymax, zmin, zmax);
+    long rows=indexes.size();
+    atoms.resize(rows, 11);
+    
+    for (int i=0; i<rows; i++) {
+        atoms.row(i)=VectorXd::Map(&wdata[indexes[i]][0], 11);
+    }
+
+ }
+
 //Function assembles particles within cutoff range from left and right borders and returns it through matrix argument
 //Matrix returned through input argument m,
 //rcx - is a cutoff distance of lj potential
@@ -252,7 +314,6 @@ void hardycpp::getInsideAtoms(const Eigen::MatrixXd &data, Eigen::MatrixXd &atom
     long end=data.rows();
     int i; //timestep by default is scale of 1000
 
-    data(0,1);
     
     if (scaled)//select what coordinates we need
         for (i=0; i<end; i++) {
@@ -274,7 +335,7 @@ void hardycpp::getInsideAtoms(const Eigen::MatrixXd &data, Eigen::MatrixXd &atom
 //            atoms(i,j)=data(indexes[i],j);
 //        }
         atoms.row(i)=data.row(indexes[i]);
-        cout<<atoms.row(i)<<endl;
+//        cout<<atoms.row(i)<<endl;
     }
     
 }
@@ -283,9 +344,7 @@ void hardycpp::getOutsideAtoms(const Eigen::MatrixXd &data, Eigen::MatrixXd &ato
     
     vector <int> indexes;
     long end=data.rows();
-    int i; //timestep by default is scale of 1000
-    
-    //data(0,1);
+    int i; //timestep by default is scale of 1000    
     
     if (scaled)//select what coordinates we need
         for (i=0; i<end; i++) {
@@ -312,25 +371,144 @@ void hardycpp::getOutsideAtoms(const Eigen::MatrixXd &data, Eigen::MatrixXd &ato
 //            atoms(i,j)=data(indexes[i],j);
 //        }
         atoms.row(i)=data.row(indexes[i]);
-        cout<<atoms.row(i)<<endl;
+//        cout<<atoms.row(i)<<endl;
     }
     
 }
 
-void hardycpp::neighborList(const Eigen::MatrixXd &InsidersIn, const Eigen::MatrixXd &OutsidersIn, Eigen::MatrixXd &phiOut, Eigen::MatrixXd &FxOut, Eigen::MatrixXd &FyOut, Eigen::MatrixXd &FzOut,
-                  Eigen::MatrixXd &xijOut, Eigen::MatrixXd &yijOut, Eigen::MatrixXd &zijOut, Eigen::MatrixXd &lamOut){
+void hardycpp::neighborList(const Eigen::MatrixXd &InsidersIn, const Eigen::MatrixXd &OutsidersIn, Eigen::MatrixXd &phiOut, Eigen::MatrixXd &FxOut, Eigen::MatrixXd &FyOut, Eigen::MatrixXd &FzOut, Eigen::MatrixXd &xijOut, Eigen::MatrixXd &yijOut, Eigen::MatrixXd &zijOut, Eigen::MatrixXd &lamOut){
+
     
+    int NInsiders=InsidersIn.col(1).size();
+    int NOutsiders=OutsidersIn.col(1).size();
+    int trows=NInsiders+NOutsiders;
+
+    phiOut.resize(trows,trows);
+    FxOut.resize(trows, trows);
+    FyOut.resize(trows, trows);
+    FzOut.resize(trows, trows);
+    xijOut.resize(trows, trows);
+    yijOut.resize(trows, trows);
+    zijOut.resize(trows, trows);
+    lamOut.resize(trows, trows);    
+    
+    double rc=1.12246;//LJ cutoff potential
+    
+    Vector3d A(0,0,0);
+    Vector3d B(0,0,0);
+    Vector3d f(0,0,0);
+    Vector3d r(0,0,0);
+    interactions interact;
+    
+    //calculate interactions within the box
+    for (int i=0; i<NInsiders; i++) {
+        for (int j=i+1; j<NInsiders; j++) {
+            A<<InsidersIn.row(i).col(7),InsidersIn.row(i).col(8),InsidersIn.row(i).col(9);
+            B<<InsidersIn.row(j).col(7),InsidersIn.row(j).col(8),InsidersIn.row(j).col(9);
+            phiOut(i,j)=interact.LJPotential(A, B, rc, 1.0, 1.0);
+            f=interact.LJForce(A, B, rc);
+            r=A-B;
+            FxOut(i,j)=f(0);
+            FyOut(i,j)=f(1);
+            FzOut(i,j)=f(2);
+            xijOut(i,j)=r(0);
+            yijOut(i,j)=r(1);
+            zijOut(i,j)=r(2);
+        }
+    }
+    
+    int m;
+    for (int i=0; i<NInsiders; i++) {
+        for(int j=0; j<NOutsiders; j++){
+            
+            m=j+NInsiders;
+            B<<InsidersIn(i,7),InsidersIn(i,8),InsidersIn(i,9);
+            A<<OutsidersIn(j,7),OutsidersIn(j,8),OutsidersIn(j,9);
+            phiOut(i,m)=interact.LJPotential(A, B, rc);
+            f=interact.LJForce(A, B, rc);
+            r=A-B;
+            FxOut(i,m)=f(0);
+            FyOut(i,m)=f(1);
+            FzOut(i,m)=f(2);
+            if(sqrt(r.array().square().sum())<rc)
+                m=m;//calculate lambda            
+            
+        }
+    }
+    
+//    u=u+u'; %potential is symmetric
+//    fx=fx-fx'; %force is antysymmetric
+//    fy=fy-fy'; %force is antysymmetric
+//    fz=fz-fz'; %force is antysymmetric
+//    rijx=rijx-rijx'; %distance is antysymmetric
+//    rijy=rijy-rijy'; %distance is antysymmetric
+//    rijz=rijz-rijz'; %distance is antysymmetric
+//    lam=lam+lam';
+    
+     phiOut=(phiOut+phiOut.transpose()).eval();
+     FxOut=(FxOut-FxOut.transpose()).eval();
+     FyOut=(FyOut-FyOut.transpose()).eval();
+     FzOut=(FzOut-FzOut.transpose()).eval();
+     xijOut=(xijOut-xijOut.transpose()).eval();
+     yijOut=(yijOut-yijOut.transpose()).eval();
+     zijOut=(zijOut-zijOut.transpose()).eval();
+     lamOut=(lamOut+lamOut.transpose()).eval();
 }
 
 void hardycpp::stresskinetic(const Eigen::MatrixXd &InsidersIn, double avvxIn, double avvyIn, double avvzIn, double volIn, Eigen::MatrixXd &SkOut){
-    
+//    function Sk=stresskinetic(psiatoms,vel,vol)
+//    Sk=zeros(3,3);
+//    v=[psiatoms(:,5) psiatoms(:,6) psiatoms(:,7)];
+//    m=psiatoms(:,11);
+//    vminusu=[v(:,1)-vel(1) v(:,2)-vel(2) v(:,3)-vel(3)];
+//    for i=1:3
+//        for j=1:3
+//            Sk(i,j)=-sum(m.*vminusu(:,i).*vminusu(:,j));
+//    end
+//    end
+//    Sk=Sk/vol;
+//    
+//    end
+    SkOut.resize(3, 3);
+    Vector3d uvel(avvxIn,avvyIn,avvzIn);
+    for (int i=0; i<3; i++) {
+        for (int j=0; j<3; j++) {
+            //col 11 - mass
+            //col 5 - vx nonscaled
+            SkOut(i,j)=-InsidersIn.col(10).cwiseProduct((InsidersIn.col(i+4).array()-uvel(i)).matrix()).cwiseProduct((InsidersIn.col(j+4).array()-uvel(j)).matrix()).sum()/volIn;
+        }
+    }
 }
 
 void hardycpp::stresspotential(const Eigen::MatrixXd &FxIn, const Eigen::MatrixXd &FyIn, const Eigen::MatrixXd &FzIn,
                      const Eigen::MatrixXd &xijIn, const Eigen::MatrixXd &yijIn, const Eigen::MatrixXd &zijIn, const Eigen::MatrixXd &lamIn, double volIn, Eigen::MatrixXd &SpOut){
     
-}
+//    Sv(1,1)=-0.5*sum(sum(sum(Fx.*xij.*lam))); %xx
+//    Sv(1,2)=-0.5*sum(sum(sum(Fx.*yij.*lam))); %xy
+//    Sv(1,3)=-0.5*sum(sum(sum(Fx.*zij.*lam))); %xz
+//    
+//    Sv(2,1)=-0.5*sum(sum(sum(Fy.*xij.*lam))); %yx
+//    Sv(2,2)=-0.5*sum(sum(sum(Fy.*yij.*lam))); %yy
+//    Sv(2,3)=-0.5*sum(sum(sum(Fy.*zij.*lam))); %yz
+//    
+//    Sv(3,1)=-0.5*sum(sum(sum(Fz.*xij.*lam))); %zx
+//    Sv(3,2)=-0.5*sum(sum(sum(Fz.*yij.*lam))); %zy
+//    Sv(3,3)=-0.5*sum(sum(sum(Fz.*zij.*lam))); %zz
+//    
+//    Sv=Sv/vol;
+     SpOut.resize(3, 3);
+     SpOut(0,0)=-0.5*FxIn.cwiseProduct(xijIn).cwiseProduct(lamIn).sum()/volIn;
+     SpOut(0,1)=-0.5*FxIn.cwiseProduct(yijIn).cwiseProduct(lamIn).sum()/volIn;
+     SpOut(0,2)=-0.5*FxIn.cwiseProduct(zijIn).cwiseProduct(lamIn).sum()/volIn;
 
+     SpOut(1,0)=-0.5*FyIn.cwiseProduct(xijIn).cwiseProduct(lamIn).sum()/volIn;
+     SpOut(1,1)=-0.5*FyIn.cwiseProduct(yijIn).cwiseProduct(lamIn).sum()/volIn;
+     SpOut(1,2)=-0.5*FyIn.cwiseProduct(zijIn).cwiseProduct(lamIn).sum()/volIn;
+    
+     SpOut(2,0)=-0.5*FzIn.cwiseProduct(xijIn).cwiseProduct(lamIn).sum()/volIn;
+     SpOut(2,1)=-0.5*FzIn.cwiseProduct(yijIn).cwiseProduct(lamIn).sum()/volIn;
+     SpOut(2,2)=-0.5*FzIn.cwiseProduct(zijIn).cwiseProduct(lamIn).sum()/volIn;
+}
 
 void hardycpp::test(){
     

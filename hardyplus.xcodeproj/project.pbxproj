@@ -10,6 +10,8 @@
 		4D2503A117C5AA7600AA1A69 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D2503A017C5AA7600AA1A69 /* main.cpp */; };
 		4D2503A317C5AA7600AA1A69 /* hardyplus.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4D2503A217C5AA7600AA1A69 /* hardyplus.1 */; };
 		4D2503AB17C5AAE300AA1A69 /* hardycpp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D2503A917C5AAE300AA1A69 /* hardycpp.cpp */; };
+		4D6A031E17DF638900AED203 /* interactions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D6A031C17DF638900AED203 /* interactions.cpp */; };
+		4D6A032117E12F6A00AED203 /* plotter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D6A031F17E12F6A00AED203 /* plotter.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -31,6 +33,10 @@
 		4D2503A217C5AA7600AA1A69 /* hardyplus.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = hardyplus.1; sourceTree = "<group>"; };
 		4D2503A917C5AAE300AA1A69 /* hardycpp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = hardycpp.cpp; sourceTree = "<group>"; };
 		4D2503AA17C5AAE300AA1A69 /* hardycpp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hardycpp.h; sourceTree = "<group>"; };
+		4D6A031C17DF638900AED203 /* interactions.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = interactions.cpp; sourceTree = "<group>"; };
+		4D6A031D17DF638900AED203 /* interactions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = interactions.h; sourceTree = "<group>"; };
+		4D6A031F17E12F6A00AED203 /* plotter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = plotter.cpp; sourceTree = "<group>"; };
+		4D6A032017E12F6A00AED203 /* plotter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = plotter.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -67,6 +73,10 @@
 				4D2503A917C5AAE300AA1A69 /* hardycpp.cpp */,
 				4D2503AA17C5AAE300AA1A69 /* hardycpp.h */,
 				4D2503A217C5AA7600AA1A69 /* hardyplus.1 */,
+				4D6A031C17DF638900AED203 /* interactions.cpp */,
+				4D6A031D17DF638900AED203 /* interactions.h */,
+				4D6A031F17E12F6A00AED203 /* plotter.cpp */,
+				4D6A032017E12F6A00AED203 /* plotter.h */,
 			);
 			path = hardyplus;
 			sourceTree = "<group>";
@@ -124,6 +134,8 @@
 			files = (
 				4D2503A117C5AA7600AA1A69 /* main.cpp in Sources */,
 				4D2503AB17C5AAE300AA1A69 /* hardycpp.cpp in Sources */,
+				4D6A031E17DF638900AED203 /* interactions.cpp in Sources */,
+				4D6A032117E12F6A00AED203 /* plotter.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

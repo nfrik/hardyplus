@@ -11,75 +11,44 @@
 #include <math.h>
 #include "hardycpp.h"
 #include <Eigen/Dense>
+#include "plotter.h"
+#include <unistd.h>
+
 
 using namespace Eigen;
 int main(int argc, const char * argv[])
 {
     hardycpp *d = new hardycpp::hardycpp("/Users/nfrik/Documents/LAMMPS/work/couette_flow_git/flow.hpcvel.17.txt");
     
-    MatrixXd data;
-    MatrixXd insiders;
-    MatrixXd outsiders;
-    d->getBodyHeadTail2Matrix(data, 1000, 0.1);
-//    d->getInsideAtoms(data, insiders, true, 0.1, 0.3, 0.1, 0.3, -INFINITY, INFINITY);
-    d->getOutsideAtoms(data, outsiders, true, 0.1, 0.3, 0.1, 0.3, -INFINITY, INFINITY, 0.1, 0.1, 0.1);
-//    
-//
-//    
-    d->plot(outsiders.col(1).data(), outsiders.col(2).data(), (int)outsiders.col(2).size());
-
-    
+    unsigned long ts=time(NULL);
+    d->run(1000, 10, 10, 1);
+    cout<<"total time in sec: "<<time(NULL)-ts<<endl;
+//      MatrixXd data;
+//      MatrixXd insiders;
+//      MatrixXd outsiders;
+//      d->getBodyHeadTail2Matrix(data, 1000, 0.1);
+//      d->getInsideAtoms(data, insiders, true, 0.1, 0.3, 0.1, 0.3, -INFINITY, INFINITY);
+//      d->getOutsideAtoms(data, outsiders, true, 0.1, 0.3, 0.1, 0.3, -INFINITY, INFINITY, 0.1, 0.1, 0.1);
+//////
+//////
+//////    
+//      d->plot(outsiders.col(1).data(), outsiders.col(2).data(), (int)outsiders.col(2).size());
+//    Vector3d d(10,30,230);
+//    Vector3d c(5,1,5);
+////    c<<5,1,5;
 //    MatrixXd m(3,3);
 //    m<<1,2,3,
 //       4,5,6,
 //        7,8,9;
-//    
-//    cout<<m.cols()<<endl;
-//    
-//    VectorXd v(3),b;
-//    v << 1,2,3;
+//    m=(m+m.transpose()).eval();
+//    cout<<m<<endl;
+// //   cout<<(((c.transpose()-m.row(0)).array().abs())-(5*c.transpose()-m.row(0)).array().abs()).sum()<<endl;
+// //   sort(c.data(), c.data()+c.size());
+////    d=c.array()-5;
+//    c=VectorXd::Map(m.transpose().row(0).data(), 3);
+//    cout<<c<<endl;
 //
-//    vector<vector<double>> s;
-//    s.resize(2);
-//    s[0].resize(2);
-//    s[1].resize(2);
-//    s[0][0]=1;
-//    s[1][0]=2;
-//    s[0][1]=3;
-//    s[1][1]=4;
-//    cout<<s.size()*s[0].size()<<endl;
-//    Map<MatrixXd> mymat(&s[0][0],2,2);
-//    cout<<mymat<<endl;
-//    b=v;
-//    b.transposeInPlace();
-    //cout<<m.cwiseQuotient(m.transpose().eval())<<endl;
-    
-//    vector<vector<int>> d;
-//    
-//    d.resize(10);
-//    for (int i=0; i<10; i++) {
-//        d[i].resize(3);
-//        d[i][0]=i;
-//        d[i][1]=i*10;
-//        d[i][2]=i*100;
-//    }
-//
-//    for (int i=0; i<10; i++) {
-//        std::cout<<"d["<<i<<"][0]="<<d[i][0]<<"  d["<<i<<"][1]="<<d[i][1]<<"  d["<<i<<"][2]="<<d[i][2]<<endl;
-//    }
-    
-    
-//    std::cout<<"Lower bound"<<*low<<endl;
-//    std::cout<<"Upper bound"<<*up<<endl;
-    
-    
-    //int n=5;
-    
-    //std::cout<<"Upper bound = "<<*it<<endl;
-    
 
-    
-    
     delete d;
     
     return 0;
