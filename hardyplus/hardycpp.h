@@ -47,6 +47,7 @@ public:
                    const Eigen::MatrixXd &xijIn, const Eigen::MatrixXd &yijIn, const Eigen::MatrixXd &zijIn, const Eigen::MatrixXd &lamIn, double volIn, Eigen::MatrixXd &SpOut);
     
     void plot(const double *xData, const double *yData,int dataSize);
+    void printMat2File(const Eigen::MatrixXd &m, string filename);
     
 private:
     simdata sdata;

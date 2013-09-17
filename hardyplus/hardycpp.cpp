@@ -20,6 +20,14 @@
 
 using namespace Eigen;
 
+template <typename T>
+string NumberToString ( T Number )
+{
+	stringstream ss;
+	ss << Number;
+	return ss.str();
+}
+
 hardycpp::hardycpp(const char *path){
     
     
@@ -116,31 +124,23 @@ void hardycpp::run(int time, int dargx, int dargy, int dargz){
                 
                 stresskinetic(inatoms, tvx, tvy, tvz, vol, Sk);
                 stresspotential(Fx, Fy, Fz, xij, yij, zij, lam, vol, Sv);
+
+//                printMat2File(U, "Udat.txt");
+//                printMat2File(Fx, "Fxdat.txt");
+//                printMat2File(Fy, "Fydat.txt");
+//                printMat2File(Fz, "Fzdat.txt");
+//                printMat2File(xij, "Xijdat.txt");
+//                printMat2File(yij, "Yijdat.txt");
+//                printMat2File(zij, "Zijdat.txt");
+//                printMat2File(lam, "Lamdat.txt");
+//                printMat2File(inatoms, "InAtomsdat.txt");
+//                printMat2File(outatoms, "OutAtomsdat.txt");
+                printMat2File(Sk, string("Skdat_i")+NumberToString(i)+string("_j_")+NumberToString(j)+string(".txt"));
+                printMat2File(Sv, string("Svdat_i")+NumberToString(i)+string("_j_")+NumberToString(j)+string(".txt"));
                 
-                cout<<"Pxy for cell["<<i<<"]["<<j<<"] = "<<(Sk+Sv).row(0).col(0)<<endl;
-//                //calculate total values of [mass vx vy vz] for 2d box
-//                totals=sum(psiatoms(:,[11 5 6 7]));
-//
-//                //calculate number of particles
-//                NN=length(psiatoms(:,1));
-//                
-//                //separate calculated values
-//                totmass=totals(1);
-//                avevelx=totals(2)/NN;
-//                avevely=totals(3)/NN;
-//                avevelz=totals(4)/NN;
-//                
-//                //find density
-//                rho=(totmass/vol);
-//                
-//                //find momentum
-//                momx=totmass*avevelx/(vol);
-//                momy=totmass*avevely/(vol);
-//                momz=totmass*avevelz/(vol);
+                //cout<<"Pxy for cell["<<i<<"]["<<j<<"] = "<<(Sk+Sv).row(0).col(0)<<endl;
                 
-//               plot(inatoms.col(1).data(), inatoms.col(2).data(), (int)inatoms.col(2).size());
-//
-//               plot(outatoms.col(1).data(), outatoms.col(2).data(), (int)outatoms.col(2).size());
+
                 
                 //neighborList(inatoms, outatoms, U, Fx, Fy, Fz, xij, yij, zij, lam);
                 
@@ -390,7 +390,7 @@ void hardycpp::neighborList(const Eigen::MatrixXd &InsidersIn, const Eigen::Matr
     xijOut.resize(trows, trows);
     yijOut.resize(trows, trows);
     zijOut.resize(trows, trows);
-    lamOut.resize(trows, trows);    
+    lamOut.resize(trows, trows);
     
     double rc=1.12246;//LJ cutoff potential
     
@@ -414,6 +414,8 @@ void hardycpp::neighborList(const Eigen::MatrixXd &InsidersIn, const Eigen::Matr
             xijOut(i,j)=r(0);
             yijOut(i,j)=r(1);
             zijOut(i,j)=r(2);
+            
+            lamOut(i,j)=1;
         }
     }
     
@@ -422,17 +424,22 @@ void hardycpp::neighborList(const Eigen::MatrixXd &InsidersIn, const Eigen::Matr
         for(int j=0; j<NOutsiders; j++){
             
             m=j+NInsiders;
-            B<<InsidersIn(i,7),InsidersIn(i,8),InsidersIn(i,9);
-            A<<OutsidersIn(j,7),OutsidersIn(j,8),OutsidersIn(j,9);
+            A<<InsidersIn(i,7),InsidersIn(i,8),InsidersIn(i,9);
+            B<<OutsidersIn(j,7),OutsidersIn(j,8),OutsidersIn(j,9);
             phiOut(i,m)=interact.LJPotential(A, B, rc);
-            f=interact.LJForce(A, B, rc);
+            f=interact.LJForce(A, B, rc); //BIG QUESTION? I need to figure out the order A,B or B,A !!!!!!!!!!!!!!!!
             r=A-B;
             FxOut(i,m)=f(0);
             FyOut(i,m)=f(1);
             FzOut(i,m)=f(2);
-            if(sqrt(r.array().square().sum())<rc)
-                m=m;//calculate lambda            
+            xijOut(i,m)=r(0);
+            yijOut(i,m)=r(1);
+            zijOut(i,m)=r(2);
             
+            if(sqrt(r.array().square().sum())<rc)
+                m=m;//calculate lambda
+            
+            lamOut(i,m)=0;
         }
     }
     
@@ -526,6 +533,12 @@ void hardycpp::test(){
     plot(xData, yData, (int)indxs.size());
     delete []yData;
     delete []xData;
+}
+
+void hardycpp::printMat2File(const Eigen::MatrixXd &m, string filename){
+    ofstream matoutstr(filename);
+    matoutstr<<m<<endl;
+    matoutstr.close();
 }
 
 void hardycpp::plot(const double *xData,const double *yData,int dataSize){

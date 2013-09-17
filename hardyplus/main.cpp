@@ -23,7 +23,7 @@ int main(int argc, const char * argv[])
     unsigned long ts=time(NULL);
     d->run(1000, 10, 10, 1);
     cout<<"total time in sec: "<<time(NULL)-ts<<endl;
-//      MatrixXd data;
+    
 //      MatrixXd insiders;
 //      MatrixXd outsiders;
 //      d->getBodyHeadTail2Matrix(data, 1000, 0.1);
