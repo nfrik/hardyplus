@@ -71,12 +71,24 @@ void hardycpp::run(int time, int dargx, int dargy, int dargz){
     
     plotter plotter;
     
-    MatrixXd data, U, Fx, Fy, Fz, xij, yij, zij, lam, inatoms, outatoms, Sk, Sv;
+    MatrixXd data, U, Fx, Fy, Fz, xij, yij, zij, lam, inatoms, outatoms, Sk, Sv, output;
+    
     getBodyHeadTail2Matrix(data, time, rcx);//Glue data from tail to head
+    
+    output.resize(dargx, dargy);
     
     for (int i=1; i<=dargx; i++) {
         for (int j=1; j<=dargy; j++) {
             for (int k=1; k<=dargz; k++) {
+                
+                data.setConstant(0);
+                U.setConstant(0);
+                Fx.setConstant(0); Fy.setConstant(0); Fz.setConstant(0);
+                xij.setConstant(0); yij.setConstant(0); zij.setConstant(0);
+                lam.setConstant(0);
+                inatoms.setConstant(0); outatoms.setConstant(0);
+                Sk.setConstant(0); Sv.setConstant(0);
+                
                 sxlo=(j-1.0)/dargx;
                 sylo=(i-1.0)*dely/dargy+yclo;
                 szlo=(k-1.0)/dargz;
@@ -124,29 +136,33 @@ void hardycpp::run(int time, int dargx, int dargy, int dargz){
                 
                 stresskinetic(inatoms, tvx, tvy, tvz, vol, Sk);
                 stresspotential(Fx, Fy, Fz, xij, yij, zij, lam, vol, Sv);
+                
+                output(i-1,j-1)=-(Sv(0,1)+Sk(0,1));
 
-//                printMat2File(U, "Udat.txt");
-//                printMat2File(Fx, "Fxdat.txt");
-//                printMat2File(Fy, "Fydat.txt");
-//                printMat2File(Fz, "Fzdat.txt");
-//                printMat2File(xij, "Xijdat.txt");
-//                printMat2File(yij, "Yijdat.txt");
-//                printMat2File(zij, "Zijdat.txt");
-//                printMat2File(lam, "Lamdat.txt");
-//                printMat2File(inatoms, "InAtomsdat.txt");
-//                printMat2File(outatoms, "OutAtomsdat.txt");
-                printMat2File(Sk, string("Skdat_i")+NumberToString(i)+string("_j_")+NumberToString(j)+string(".txt"));
-                printMat2File(Sv, string("Svdat_i")+NumberToString(i)+string("_j_")+NumberToString(j)+string(".txt"));
+//                printMat2File(U, string("Udat_i")+NumberToString(i)+string("_j_")+NumberToString(j)+string(".txt"));
+//                printMat2File(Fx, string("Fxdat_i")+NumberToString(i)+string("_j_")+NumberToString(j)+string(".txt"));
+//                printMat2File(Fy, string("Fydat_i")+NumberToString(i)+string("_j_")+NumberToString(j)+string(".txt"));
+//                printMat2File(Fz, string("Fzdat_i")+NumberToString(i)+string("_j_")+NumberToString(j)+string(".txt"));
+//                printMat2File(xij, string("Xijdat_i")+NumberToString(i)+string("_j_")+NumberToString(j)+string(".txt"));
+//                printMat2File(yij, string("Yijdat_i")+NumberToString(i)+string("_j_")+NumberToString(j)+string(".txt"));
+//                printMat2File(zij, string("Zijdat_i")+NumberToString(i)+string("_j_")+NumberToString(j)+string(".txt"));
+//                printMat2File(lam, string("Lamdat_i")+NumberToString(i)+string("_j_")+NumberToString(j)+string(".txt"));
+//                printMat2File(inatoms, string("InAtomsdat_i")+NumberToString(i)+string("_j_")+NumberToString(j)+string(".txt"));
+//                printMat2File(outatoms, string("OutAtomsdat_i")+NumberToString(i)+string("_j_")+NumberToString(j)+string(".txt"));
+//                printMat2File(Sk, string("Skdat_i")+NumberToString(i)+string("_j_")+NumberToString(j)+string(".txt"));
+//                printMat2File(Sv, string("Svdat_i")+NumberToString(i)+string("_j_")+NumberToString(j)+string(".txt"));
                 
                 //cout<<"Pxy for cell["<<i<<"]["<<j<<"] = "<<(Sk+Sv).row(0).col(0)<<endl;
                 
-
+                
                 
                 //neighborList(inatoms, outatoms, U, Fx, Fy, Fz, xij, yij, zij, lam);
                 
             }
         }
     }
+
+                printMat2File(output, string("P12_t_")+NumberToString(time)+string(".txt"));
     
 //    double *xData=(double*)malloc(sizeof(double)*indxs.size());
 //    double *yData=(double*)malloc(sizeof(double)*indxs.size());
@@ -391,6 +407,15 @@ void hardycpp::neighborList(const Eigen::MatrixXd &InsidersIn, const Eigen::Matr
     yijOut.resize(trows, trows);
     zijOut.resize(trows, trows);
     lamOut.resize(trows, trows);
+
+    phiOut.setConstant(0);
+    FxOut.setConstant(0);
+    FyOut.setConstant(0);
+    FzOut.setConstant(0);
+    xijOut.setConstant(0);
+    yijOut.setConstant(0);
+    zijOut.setConstant(0);
+    lamOut.setConstant(0);
     
     double rc=1.12246;//LJ cutoff potential
     
@@ -403,8 +428,8 @@ void hardycpp::neighborList(const Eigen::MatrixXd &InsidersIn, const Eigen::Matr
     //calculate interactions within the box
     for (int i=0; i<NInsiders; i++) {
         for (int j=i+1; j<NInsiders; j++) {
-            A<<InsidersIn.row(i).col(7),InsidersIn.row(i).col(8),InsidersIn.row(i).col(9);
-            B<<InsidersIn.row(j).col(7),InsidersIn.row(j).col(8),InsidersIn.row(j).col(9);
+            A<<InsidersIn(i,7),InsidersIn(i,8),InsidersIn(i,9);
+            B<<InsidersIn(j,7),InsidersIn(j,8),InsidersIn(j,9);
             phiOut(i,j)=interact.LJPotential(A, B, rc, 1.0, 1.0);
             f=interact.LJForce(A, B, rc);
             r=A-B;
@@ -503,18 +528,41 @@ void hardycpp::stresspotential(const Eigen::MatrixXd &FxIn, const Eigen::MatrixX
 //    Sv(3,3)=-0.5*sum(sum(sum(Fz.*zij.*lam))); %zz
 //    
 //    Sv=Sv/vol;
-     SpOut.resize(3, 3);
-     SpOut(0,0)=-0.5*FxIn.cwiseProduct(xijIn).cwiseProduct(lamIn).sum()/volIn;
-     SpOut(0,1)=-0.5*FxIn.cwiseProduct(yijIn).cwiseProduct(lamIn).sum()/volIn;
-     SpOut(0,2)=-0.5*FxIn.cwiseProduct(zijIn).cwiseProduct(lamIn).sum()/volIn;
-
-     SpOut(1,0)=-0.5*FyIn.cwiseProduct(xijIn).cwiseProduct(lamIn).sum()/volIn;
-     SpOut(1,1)=-0.5*FyIn.cwiseProduct(yijIn).cwiseProduct(lamIn).sum()/volIn;
-     SpOut(1,2)=-0.5*FyIn.cwiseProduct(zijIn).cwiseProduct(lamIn).sum()/volIn;
     
-     SpOut(2,0)=-0.5*FzIn.cwiseProduct(xijIn).cwiseProduct(lamIn).sum()/volIn;
-     SpOut(2,1)=-0.5*FzIn.cwiseProduct(yijIn).cwiseProduct(lamIn).sum()/volIn;
-     SpOut(2,2)=-0.5*FzIn.cwiseProduct(zijIn).cwiseProduct(lamIn).sum()/volIn;
+    int imax=(int)FxIn.rows();
+    int jmax=(int)FxIn.cols();
+    SpOut.resize(3, 3);
+    SpOut.setConstant(0);
+    
+    for (int i=0; i<imax; i++) {
+        for (int j=0; j<jmax; j++) {
+            SpOut(0,0)+=FxIn(i,j)*xijIn(i,j)*lamIn(i,j);
+            SpOut(0,1)+=FxIn(i,j)*yijIn(i,j)*lamIn(i,j);
+            SpOut(0,2)+=FxIn(i,j)*zijIn(i,j)*lamIn(i,j);
+            
+            SpOut(1,0)+=FyIn(i,j)*xijIn(i,j)*lamIn(i,j);
+            SpOut(1,1)+=FyIn(i,j)*yijIn(i,j)*lamIn(i,j);
+            SpOut(1,2)+=FyIn(i,j)*zijIn(i,j)*lamIn(i,j);
+            
+            SpOut(2,0)+=FzIn(i,j)*xijIn(i,j)*lamIn(i,j);
+            SpOut(2,1)+=FzIn(i,j)*yijIn(i,j)*lamIn(i,j);
+            SpOut(2,2)+=FzIn(i,j)*zijIn(i,j)*lamIn(i,j);
+        }
+    }
+            SpOut=-0.5/volIn*SpOut;
+//     SpOut.resize(3, 3);
+//     SpOut.setConstant(0);
+//     SpOut(0,0)=-0.5*FxIn.cwiseProduct(xijIn).cwiseProduct(lamIn).sum()/volIn;
+//     SpOut(0,1)=-0.5*FxIn.cwiseProduct(yijIn).cwiseProduct(lamIn).sum()/volIn;
+//     SpOut(0,2)=-0.5*FxIn.cwiseProduct(zijIn).cwiseProduct(lamIn).sum()/volIn;
+//
+//     SpOut(1,0)=-0.5*FyIn.cwiseProduct(xijIn).cwiseProduct(lamIn).sum()/volIn;
+//     SpOut(1,1)=-0.5*FyIn.cwiseProduct(yijIn).cwiseProduct(lamIn).sum()/volIn;
+//     SpOut(1,2)=-0.5*FyIn.cwiseProduct(zijIn).cwiseProduct(lamIn).sum()/volIn;
+//    
+//     SpOut(2,0)=-0.5*FzIn.cwiseProduct(xijIn).cwiseProduct(lamIn).sum()/volIn;
+//     SpOut(2,1)=-0.5*FzIn.cwiseProduct(yijIn).cwiseProduct(lamIn).sum()/volIn;
+//     SpOut(2,2)=-0.5*FzIn.cwiseProduct(zijIn).cwiseProduct(lamIn).sum()/volIn;
 }
 
 void hardycpp::test(){

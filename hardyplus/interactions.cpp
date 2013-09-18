@@ -38,7 +38,7 @@ Eigen::Vector3d interactions::LJForce(const Eigen::Vector3d A, const Eigen::Vect
     double r=sqrt((A-B).array().square().sum());
     Eigen::Vector3d rr=(A-B)/r;
     Eigen::Vector3d f(0,0,0);
-    if (r<rc)
+    if ((r<rc)&&(r>0))
       f=24*epsilon*rr*(2*pow(sigma/r, 12)/r-pow(sigma/r, 6)/r);
     return f;
 }
@@ -47,9 +47,8 @@ double interactions::LJPotential(const Eigen::Vector3d A, const Eigen::Vector3d 
     
     double r=sqrt((A-B).array().square().sum());
     double u=0;
-    if (r<rc) {
+    if ((r<rc)&&(r>0))
         u=4*epsilon*(pow(sigma/r,12)-pow(sigma/r,6));
-    }
     return u;
 }
 

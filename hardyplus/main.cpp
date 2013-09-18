@@ -18,13 +18,21 @@
 using namespace Eigen;
 int main(int argc, const char * argv[])
 {
-    hardycpp *d = new hardycpp::hardycpp("/Users/nfrik/Documents/LAMMPS/work/couette_flow_git/flow.hpcvel.17.txt");
+//---------------------------------------------------------------------------------------------------------------        
+   unsigned long ts=time(NULL);
+//---------------------------------------------------------------------------------------------------------------
+
     
-    unsigned long ts=time(NULL);
-    d->run(1000, 10, 10, 1);
-    cout<<"total time in sec: "<<time(NULL)-ts<<endl;
+   hardycpp *d = new hardycpp::hardycpp("/Users/nfrik/Documents/LAMMPS/work/couette_flow_git/flow.hpcvel.17.txt");
     
-//      MatrixXd insiders;
+//    d->run(000, 10, 10, 1);
+    
+    for (int i=0; i<=200000; i+=1000) {
+        cout<<"Frame: "<<i<<endl;
+        d->run(i, 10, 10, 1);
+    }
+    
+    
 //      MatrixXd outsiders;
 //      d->getBodyHeadTail2Matrix(data, 1000, 0.1);
 //      d->getInsideAtoms(data, insiders, true, 0.1, 0.3, 0.1, 0.3, -INFINITY, INFINITY);
@@ -40,6 +48,8 @@ int main(int argc, const char * argv[])
 //    m<<1,2,3,
 //       4,5,6,
 //        7,8,9;
+//    double d=m(0,1)+m(0,1);
+//    cout<<d<<endl;
 //    m=(m+m.transpose()).eval();
 //    cout<<m<<endl;
 // //   cout<<(((c.transpose()-m.row(0)).array().abs())-(5*c.transpose()-m.row(0)).array().abs()).sum()<<endl;
@@ -51,5 +61,8 @@ int main(int argc, const char * argv[])
 
     delete d;
     
+//---------------------------------------------------------------------------------------------------------------
+    cout<<"Task completed in: "<<time(NULL)-ts<<" seconds"<<endl;
+//---------------------------------------------------------------------------------------------------------------        
     return 0;
 }
