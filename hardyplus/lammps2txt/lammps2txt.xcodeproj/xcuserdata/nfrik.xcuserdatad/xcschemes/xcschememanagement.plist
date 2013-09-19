@@ -4,15 +4,15 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
-		<key>hardyplus.xcscheme</key>
+		<key>lammps2txt.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>0</integer>
+			<integer>1</integer>
 		</dict>
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
-		<key>4D25039C17C5AA7600AA1A69</key>
+		<key>4D6A034A17EA7BB600AED203</key>
 		<dict>
 			<key>primary</key>
 			<true/>

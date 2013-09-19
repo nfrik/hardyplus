@@ -30,7 +30,6 @@ string NumberToString ( T Number )
 
 hardycpp::hardycpp(const char *path){
     
-    
     this->readRawDataFromFile(path);//read file to wdata
     
     //this->run(10000,10,10,1);//run 10000'th frame with 10x10x1 mesh grid

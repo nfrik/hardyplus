@@ -37,6 +37,7 @@
 		4D6A031D17DF638900AED203 /* interactions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = interactions.h; sourceTree = "<group>"; };
 		4D6A031F17E12F6A00AED203 /* plotter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = plotter.cpp; sourceTree = "<group>"; };
 		4D6A032017E12F6A00AED203 /* plotter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = plotter.h; sourceTree = "<group>"; };
+		4D6A035717EA7BB600AED203 /* lammps2txt.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = lammps2txt.xcodeproj; path = hardyplus/lammps2txt/lammps2txt.xcodeproj; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -55,6 +56,7 @@
 			children = (
 				4D25039F17C5AA7600AA1A69 /* hardyplus */,
 				4D25039E17C5AA7600AA1A69 /* Products */,
+				4D6A035717EA7BB600AED203 /* lammps2txt.xcodeproj */,
 			);
 			sourceTree = "<group>";
 		};
