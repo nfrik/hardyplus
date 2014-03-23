@@ -37,7 +37,7 @@ public:
     vector<int> findindxs(bool scaled, int time, double xmin, double xmax, double ymin, double ymax, double zmin, double zmax);
     void        findatoms(Eigen::MatrixXd &atoms,bool scaled, int time, double xmin, double xmax, double ymin, double ymax, double zmin, double zmax);
     
-    void getBodyHeadTail2Matrix(Eigen::MatrixXd &m,int time, double rcx);
+    void getBodyHeadTail2Matrix(Eigen::MatrixXd &m, double rcx);
 
     //All address variables are output ones
     void getInsideAtoms(const Eigen::MatrixXd &data, Eigen::MatrixXd &atoms, bool scaled, double xmin, double xmax, double ymin, double ymax, double zmin, double zmax);
@@ -50,6 +50,8 @@ public:
     
     void plot(const double *xData, const double *yData,int dataSize);
     void printMat2File(const Eigen::MatrixXd &m, string filename);
+    
+    
     
 private:
     simdata sdata;
@@ -64,9 +66,6 @@ private:
     void openWorkFile();
     void closeWorkFile();
     bool readNextFrame();
-    
-//    vector<vector<vector<double>>> inatoms;
-//    vector<vector<vector<double>>> outatoms;
     
     int b;
 };

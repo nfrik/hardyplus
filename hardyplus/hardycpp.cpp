@@ -32,6 +32,7 @@ hardycpp::hardycpp(const char *path){
     
     this->workFilePath=(char *)path;
     //this->readRawDataFromFile(path);//read file to wdata
+    this->openWorkFile();
     
     //we specify current folder path by truncating file name
     folderpath=path;
@@ -41,7 +42,7 @@ hardycpp::hardycpp(const char *path){
 }
 
 hardycpp::~hardycpp(){
-    
+    this->closeWorkFile();
 }
 
 /**
@@ -83,9 +84,14 @@ void hardycpp::run(int time, int dargx, int dargy, int dargz){
     
     MatrixXd data, U, Fx, Fy, Fz, xij, yij, zij, lam, inatoms, outatoms, Sk, Sv, output;
     
-    getBodyHeadTail2Matrix(data, time, rcx);//Glue data from tail to head
     
     output.resize(dargy, dargx);
+    
+    
+    if(!this->readNextFrame()){
+        cout << "Something went wrong with work file in hardy::run(...) ";
+    }
+    
     
     for (int i=1; i<=dargy; i++) {
         for (int j=1; j<=dargx; j++) {
@@ -128,7 +134,7 @@ void hardycpp::run(int time, int dargx, int dargy, int dargz){
                 //vector<int> outatoms=findindxs(true, time, sxlo-rcx, sxhi+rcx, sylo-rcy, syhi+rcy, szlo-rcz, szlo+rcz);
 
                 //extract from wdata[][] -> data
-                getBodyHeadTail2Matrix(data, time, rcx);
+                getBodyHeadTail2Matrix(data, rcx);
                 getInsideAtoms(data, inatoms, true, sxlo, sxhi, sylo, syhi, -INFINITY, INFINITY);
                 getOutsideAtoms(data, outatoms, true, sxlo, sxhi, sylo, syhi, -INFINITY, INFINITY, rcx, rcy, rcz);
                 
@@ -150,6 +156,8 @@ void hardycpp::run(int time, int dargx, int dargy, int dargz){
                 
                 output(i-1,j-1)=-(Sv(0,1)+Sk(0,1));
 
+                
+                
 //                printMat2File(U, string("Udat_i")+NumberToString(i)+string("_j_")+NumberToString(j)+string(".txt"));
 //                printMat2File(Fx, string("Fxdat_i")+NumberToString(i)+string("_j_")+NumberToString(j)+string(".txt"));
 //                printMat2File(Fy, string("Fydat_i")+NumberToString(i)+string("_j_")+NumberToString(j)+string(".txt"));
@@ -172,19 +180,9 @@ void hardycpp::run(int time, int dargx, int dargy, int dargz){
             }
         }
     }
-
-                 printMat2File(output, folderpath + string("P12_t_")+NumberToString(time)+string(".txt"));
     
-//    double *xData=(double*)malloc(sizeof(double)*indxs.size());
-//    double *yData=(double*)malloc(sizeof(double)*indxs.size());
-//    for (int i=0; i<indxs.size(); i++) {
-//        xData[i]=wdata[indxs[i]][7];
-//        yData[i]=wdata[indxs[i]][8];
-//        cout<<"Number i="<<i<<" -> "<<indxs[i]<<endl;
-//    }
-//    plot(xData, yData, (int)indxs.size());
-//    delete []yData;
-//    delete []xData;
+    printMat2File(output, folderpath + string("P12_t_")+NumberToString(time)+string(".txt"));
+
 }
 
 void hardycpp::openWorkFile(){
@@ -204,10 +202,9 @@ void hardycpp::openWorkFile(){
     this->workFileStream.clear();
     this->workFileStream.seekg(0,ios::beg);
     
-    int i;
     if (this->workFileStream.is_open()) {
         //read preamble
-        for (i=0; i<7; i++){
+        for (int i=0; i<7; i++){
             getline(this->workFileStream, line);
             switch (i) {
                 case 1:
@@ -244,7 +241,15 @@ void hardycpp::closeWorkFile(){
 
 bool hardycpp::readNextFrame(){
     
-    return false;
+    string line;
+    for (int i=0; i<sdata.natoms; i++) {
+        if (!getline(this->workFileStream, line)) {
+            cout << "EOF or something is wrong";
+            return false;
+        }
+        sscanf(line.c_str(), "%lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf",&wdata[i][0],&wdata[i][1],&wdata[i][2],&wdata[i][3],&wdata[i][4],&wdata[i][5],&wdata[i][6],&wdata[i][7],&wdata[i][8],&wdata[i][9],&wdata[i][10],&wdata[i][11]);
+    }
+    return true;
 }
 
 void hardycpp::readRawDataFromFile(const char *str){
@@ -346,27 +351,24 @@ void hardycpp::findatoms(Eigen::MatrixXd &atoms,bool scaled, int time, double xm
 //Function assembles particles within cutoff range from left and right borders and returns it through matrix argument
 //Matrix returned through input argument m,
 //rcx - is a cutoff distance of lj potential
-void hardycpp::getBodyHeadTail2Matrix(Eigen::MatrixXd &m,int time,double rcx){
+void hardycpp::getBodyHeadTail2Matrix(Eigen::MatrixXd &m,double rcx){
     vector<int> indexHead;
     vector<int> indexTail;
     int i; //timestep by default is scale of 1000
-    const int start=time/sdata.timestep*sdata.natoms;
-    const int end=(time/sdata.timestep+1)*sdata.natoms;
     
 //    vector<int> headIndxs=findindxs(true, time, 1.0-rcx, 1.0, -INFINITY, INFINITY, -INFINITY, INFINITY);
 //    vector<int> tailIndxs=findindxs(true, time, 0.0, rcx, -INFINITY, INFINITY, -INFINITY, INFINITY);
     
     
-    for (i=start; i<end; i++) {
+    for (i=0; i<sdata.natoms; i++) {
         if ((1.0-rcx<=wdata[i][1])&&(wdata[i][1]<=1.0))
             indexHead.push_back(i);
         else if((0.0<=wdata[i][1])&&(wdata[i][1]<=rcx))
             indexTail.push_back(i);
     }
+
     
-    unsigned long size=(indexHead.size()+indexTail.size()+end-start);
-    
-    m.resize(size, 11);
+    m.resize(sdata.natoms, 11);
     
     int j=0;
     
@@ -379,7 +381,7 @@ void hardycpp::getBodyHeadTail2Matrix(Eigen::MatrixXd &m,int time,double rcx){
     headtailFix<<0,1,0,0,0,0,0,(sdata.xmax-sdata.xmin),0,0,0;
     
     //piecewize initialization
-    for (unsigned long i=start; i<end; i++) {
+    for (unsigned long i=0; i<sdata.natoms; i++) {
         m.row(j)=VectorXd::Map(&wdata[i][0], 11);
         j++;
     }
