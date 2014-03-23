@@ -11,6 +11,7 @@
 
 #include <iostream>
 #include <vector>
+#include <fstream>
 #include <Eigen/Dense>
 
 #endif /* defined(__hardyplus__hardycpp__) */
@@ -21,6 +22,7 @@ struct simdata{
     int natoms; //number of atoms
     int timestep=1000; //timestep of output data
     double xmin,xmax,ymin,ymax,zmin,zmax;
+    int nframes=0;
 };
 
 class hardycpp{
@@ -52,11 +54,17 @@ public:
 private:
     simdata sdata;
     void readRawDataFromFile(const char *str);
-    char *filePath=NULL;
     vector<vector<double>> wdata; //whole data
     vector<int> inatomsindx;
     vector<int> outatomsindx;
     string folderpath;
+    
+    char *workFilePath=NULL;
+    ifstream workFileStream;
+    void openWorkFile();
+    void closeWorkFile();
+    bool readNextFrame();
+    
 //    vector<vector<vector<double>>> inatoms;
 //    vector<vector<vector<double>>> outatoms;
     

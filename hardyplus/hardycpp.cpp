@@ -30,8 +30,8 @@ string NumberToString ( T Number )
 
 hardycpp::hardycpp(const char *path){
     
-    this->filePath=(char *)path;
-    this->readRawDataFromFile(path);//read file to wdata
+    this->workFilePath=(char *)path;
+    //this->readRawDataFromFile(path);//read file to wdata
     
     //we specify current folder path by truncating file name
     folderpath=path;
@@ -127,6 +127,7 @@ void hardycpp::run(int time, int dargx, int dargy, int dargz){
                 //vector<int> inatoms=findindxs(true, time, sxlo, sxhi, sylo, syhi, szlo, szhi);
                 //vector<int> outatoms=findindxs(true, time, sxlo-rcx, sxhi+rcx, sylo-rcy, syhi+rcy, szlo-rcz, szlo+rcz);
 
+                //extract from wdata[][] -> data
                 getBodyHeadTail2Matrix(data, time, rcx);
                 getInsideAtoms(data, inatoms, true, sxlo, sxhi, sylo, syhi, -INFINITY, INFINITY);
                 getOutsideAtoms(data, outatoms, true, sxlo, sxhi, sylo, syhi, -INFINITY, INFINITY, rcx, rcy, rcz);
@@ -186,6 +187,65 @@ void hardycpp::run(int time, int dargx, int dargy, int dargz){
 //    delete []xData;
 }
 
+void hardycpp::openWorkFile(){
+    if(!this->workFileStream.is_open()){
+     this->workFileStream.open(this->workFilePath);
+    }
+    
+    string line;
+    
+    //determine number of lines in file
+    int flines=0;
+    
+    if (this->workFileStream.is_open())
+        while (getline(this->workFileStream, line))
+            flines++;
+    
+    this->workFileStream.clear();
+    this->workFileStream.seekg(0,ios::beg);
+    
+    int i;
+    if (this->workFileStream.is_open()) {
+        //read preamble
+        for (i=0; i<7; i++){
+            getline(this->workFileStream, line);
+            switch (i) {
+                case 1:
+                    sscanf(line.c_str(), "%d", &sdata.natoms);
+                    break;
+                case 3:
+                    sscanf(line.c_str(), "%lf %lf", &sdata.xmin, &sdata.xmax);
+                    break;
+                case 4:
+                    sscanf(line.c_str(), "%lf %lf", &sdata.ymin, &sdata.ymax);
+                    break;
+                case 5:
+                    sscanf(line.c_str(), "%lf %lf", &sdata.zmin, &sdata.zmax);
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+    
+    sdata.nframes=flines%sdata.natoms;
+    
+    //resize our matrix for
+    this->wdata.resize(sdata.natoms); // set height
+    for(int i=0;i<sdata.natoms;i++)
+        this->wdata[i].resize(12); // set width
+}
+
+void hardycpp::closeWorkFile(){
+    if(this->workFileStream.is_open()){
+        this->workFileStream.close();
+    }
+}
+
+bool hardycpp::readNextFrame(){
+    
+    return false;
+}
 
 void hardycpp::readRawDataFromFile(const char *str){
     
@@ -207,6 +267,7 @@ void hardycpp::readRawDataFromFile(const char *str){
     this->wdata.resize(flines); // set height
     for(int i=0;i<flines;i++)
         this->wdata[i].resize(12); // set width
+    
     
     readFileName.clear();
     readFileName.seekg(0,ios::beg);
@@ -295,6 +356,7 @@ void hardycpp::getBodyHeadTail2Matrix(Eigen::MatrixXd &m,int time,double rcx){
 //    vector<int> headIndxs=findindxs(true, time, 1.0-rcx, 1.0, -INFINITY, INFINITY, -INFINITY, INFINITY);
 //    vector<int> tailIndxs=findindxs(true, time, 0.0, rcx, -INFINITY, INFINITY, -INFINITY, INFINITY);
     
+    
     for (i=start; i<end; i++) {
         if ((1.0-rcx<=wdata[i][1])&&(wdata[i][1]<=1.0))
             indexHead.push_back(i);
@@ -382,7 +444,6 @@ void hardycpp::getOutsideAtoms(const Eigen::MatrixXd &data, Eigen::MatrixXd &ato
                 
                 indexes.push_back(i);
             }
-            
             
         }
     else{
