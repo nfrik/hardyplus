@@ -30,9 +30,13 @@ string NumberToString ( T Number )
 
 hardycpp::hardycpp(const char *path){
     
+    this->filePath=(char *)path;
     this->readRawDataFromFile(path);//read file to wdata
     
-    //this->run(10000,10,10,1);//run 10000'th frame with 10x10x1 mesh grid
+    //we specify current folder path by truncating file name
+    folderpath=path;
+    unsigned long last=folderpath.find_last_of("/\\");
+    folderpath=folderpath.substr(0,last+1);
     
 }
 
@@ -40,17 +44,24 @@ hardycpp::~hardycpp(){
     
 }
 
+/**
+ * Calculate P12 for one frame
+ *
+ */
 void hardycpp::run(int time, int dargx, int dargy, int dargz){
 //    cout<<"Natoms: "<<sdata.natoms<<"\nxmin xmax: "<<sdata.xmin<<" "<<sdata.xmax<<"\nymin ymax: "<<sdata.ymin<<" "<<sdata.ymax<<"\nzmin zmax: "<<sdata.zmin<<" "<<sdata.zmax<<endl;
     
     //wee need to compensate atom coordinates because of removal of walls
-    double yclo=0.06675+0.00001;
-    double ychi=0.9166-0.00001;
+//    double yclo=0.06675+0.00001;
+//    double ychi=0.9166-0.00001;
+    double yclo=0.04009+0.00001;
+    double ychi=0.9599-0.00001;
     double dely=ychi-yclo;
     
     
-    //Recalculate rc (potential cutoff) from lj units and true box dimension
-    double rc=1.12246;//potential cutoff distance
+    //Rescale rc (potential cutoff) from lj units and true box dimension
+    //double rc=1.12246;//potential cutoff distance
+    double rc=2.2;//potential cutoff distance
     double rcx=rc/(sdata.xmax-sdata.xmin);
     double rcy=rc/(sdata.ymax-sdata.ymin);
     double rcz=rc/(sdata.zmax-sdata.zmin);
@@ -74,10 +85,10 @@ void hardycpp::run(int time, int dargx, int dargy, int dargz){
     
     getBodyHeadTail2Matrix(data, time, rcx);//Glue data from tail to head
     
-    output.resize(dargx, dargy);
+    output.resize(dargy, dargx);
     
-    for (int i=1; i<=dargx; i++) {
-        for (int j=1; j<=dargy; j++) {
+    for (int i=1; i<=dargy; i++) {
+        for (int j=1; j<=dargx; j++) {
             for (int k=1; k<=dargz; k++) {
                 
                 data.setConstant(0);
@@ -89,10 +100,10 @@ void hardycpp::run(int time, int dargx, int dargy, int dargz){
                 Sk.setConstant(0); Sv.setConstant(0);
                 
                 sxlo=(j-1.0)/dargx;
-                sylo=(i-1.0)*dely/dargy+yclo;
-                szlo=(k-1.0)/dargz;
                 sxhi=j*1.0/dargx;
+                sylo=(i-1.0)*dely/dargy+yclo;
                 syhi=i*dely*1.0/dargy+yclo;
+                szlo=(k-1.0)/dargz;
                 szhi=k*1.0/dargz;
                 
                 dx=(sdata.xmax-sdata.xmin)*(sxhi-sxlo);
@@ -161,7 +172,7 @@ void hardycpp::run(int time, int dargx, int dargy, int dargz){
         }
     }
 
-                printMat2File(output, string("P12_t_")+NumberToString(time)+string(".txt"));
+                 printMat2File(output, folderpath + string("P12_t_")+NumberToString(time)+string(".txt"));
     
 //    double *xData=(double*)malloc(sizeof(double)*indxs.size());
 //    double *yData=(double*)malloc(sizeof(double)*indxs.size());

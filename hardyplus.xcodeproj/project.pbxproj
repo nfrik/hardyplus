@@ -14,6 +14,16 @@
 		4D6A032117E12F6A00AED203 /* plotter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D6A031F17E12F6A00AED203 /* plotter.cpp */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		4D6A036017EA7EFF00AED203 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4D6A035717EA7BB600AED203 /* lammps2txt.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 4D6A034B17EA7BB600AED203;
+			remoteInfo = lammps2txt;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXCopyFilesBuildPhase section */
 		4D25039B17C5AA7600AA1A69 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
@@ -83,6 +93,14 @@
 			path = hardyplus;
 			sourceTree = "<group>";
 		};
+		4D6A035D17EA7EFF00AED203 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				4D6A036117EA7EFF00AED203 /* lammps2txt */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -122,12 +140,28 @@
 			mainGroup = 4D25039417C5AA7600AA1A69;
 			productRefGroup = 4D25039E17C5AA7600AA1A69 /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 4D6A035D17EA7EFF00AED203 /* Products */;
+					ProjectRef = 4D6A035717EA7BB600AED203 /* lammps2txt.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				4D25039C17C5AA7600AA1A69 /* hardyplus */,
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		4D6A036117EA7EFF00AED203 /* lammps2txt */ = {
+			isa = PBXReferenceProxy;
+			fileType = "compiled.mach-o.executable";
+			path = lammps2txt;
+			remoteRef = 4D6A036017EA7EFF00AED203 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXSourcesBuildPhase section */
 		4D25039917C5AA7600AA1A69 /* Sources */ = {

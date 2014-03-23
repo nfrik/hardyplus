@@ -52,9 +52,11 @@ public:
 private:
     simdata sdata;
     void readRawDataFromFile(const char *str);
+    char *filePath=NULL;
     vector<vector<double>> wdata; //whole data
     vector<int> inatomsindx;
     vector<int> outatomsindx;
+    string folderpath;
 //    vector<vector<vector<double>>> inatoms;
 //    vector<vector<vector<double>>> outatoms;
     

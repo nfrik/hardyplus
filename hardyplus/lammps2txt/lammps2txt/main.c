@@ -13,32 +13,33 @@
 
 
 int main(int argc, const char * argv[])
-{
-    
+{    
     char cwf[1024]; // current working file
     char fileNameRead[1024];
     char fileNameWrite[1024];
-    
     
     
     if(getcwd(cwf, sizeof(cwf)) == NULL){
         perror("getcwd(...) error");
     }
     
-    if(argc<1){
-        printf("%s","Please specify input filename \n ");
+    if(argc<2){
+        printf("%s","Error: missing path to file \n ");
         return 0;
     }
     
     if(argv[1][0]=='.')
         strcat(cwf, &argv[1][1]);
-    else
+    else if(argv[1][0]=='/') //we assume user supplies full path
+    {
+        strcpy(cwf, &argv[1][0]);
+    }
+    else //we assume user
     {
         strcat(cwf,"/");
         strcat(cwf, &argv[1][0]);
     }
-    
-    
+        
     printf("Current working file: %s \n ",cwf);
     
     //    int strl = (int)strlen(argv[1]);
@@ -49,10 +50,11 @@ int main(int argc, const char * argv[])
     strcpy(fileNameWrite, fileNameRead); //copy write filename
     
     int strl = (int)strlen(fileNameRead);
-    
-    fileNameWrite[strl-3]='d';
-    fileNameWrite[strl-2]='o';
-    fileNameWrite[strl-1]='c';
+
+    fileNameWrite[strl-4]='.';
+    fileNameWrite[strl-3]='x';
+    fileNameWrite[strl-2]='t';
+    fileNameWrite[strl-1]='x';
     
     //main function changes extension letters only
     
