@@ -26,6 +26,8 @@ public:
     Eigen::Vector3d LJForce(const Eigen::Vector3d A, const Eigen::Vector3d B, double rc, double sigma, double epsilon);
     double LJPotential(const Eigen::Vector3d A, const Eigen::Vector3d B, double rc, double sigma, double epsilon);
     double getLambdaBond(const Eigen::Vector3d A, Eigen::Vector3d B, double xmin, double xmax, double ymin, double ymax, double zmin, double zmax);
+    bool isPMemberOfRectAB(double x, double y, double x0, double y0, double x1, double y1);
+    double lam(double x0,double y0,double x1, double y1,double x2, double y2);
 private:
     //add private members i.e. saving cutoff  variables
 };

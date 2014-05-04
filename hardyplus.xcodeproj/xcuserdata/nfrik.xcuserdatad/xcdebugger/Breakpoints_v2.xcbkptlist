@@ -10,11 +10,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "hardyplus/hardycpp.cpp"
-            timestampString = "414292394.557236"
+            timestampString = "419826933.081317"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "146"
-            endingLineNumber = "146"
+            startingLineNumber = "154"
+            endingLineNumber = "154"
             landmarkName = "hardycpp::run(int time, int dargx, int dargy, int dargz)"
             landmarkType = "5">
          </BreakpointContent>
@@ -25,13 +25,303 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "hardyplus/main.cpp"
-            timestampString = "414295268.310978"
+            filePath = "hardyplus/hardycpp.cpp"
+            timestampString = "419826933.081317"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "81"
-            endingLineNumber = "81"
-            landmarkName = "main(int argc, const char * argv[])"
+            startingLineNumber = "389"
+            endingLineNumber = "389"
+            landmarkName = "hardycpp::getBodyHeadTail2Matrix(Eigen::MatrixXd &amp;m,double rcx)"
+            landmarkType = "5">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "hardycpp::getBodyHeadTail2Matrix(Eigen::Matrix&lt;double, -1, -1, 0, -1, -1&gt;&amp;, double)"
+                  moduleName = "hardyplus"
+                  urlString = "file:///Users/nfrik/Documents/LAMMPS/work/couette_flow/hardyplus/hardyplus/hardycpp.cpp"
+                  timestampString = "417666048.5288"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "391"
+                  endingLineNumber = "391"
+                  offsetFromSymbolStart = "3101">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "hardycpp::getBodyHeadTail2Matrix(Eigen::Matrix&lt;double, -1, -1, 0, -1, -1&gt;&amp;, double)"
+                  moduleName = "hardyplus"
+                  urlString = "file:///Users/nfrik/Documents/LAMMPS/work/couette_flow/hardyplus/hardyplus/hardycpp.cpp"
+                  timestampString = "417666048.528996"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "391"
+                  endingLineNumber = "391"
+                  offsetFromSymbolStart = "3148">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "hardycpp::getBodyHeadTail2Matrix(Eigen::Matrix&lt;double, -1, -1, 0, -1, -1&gt;&amp;, double)"
+                  moduleName = "hardyplus"
+                  urlString = "file:///Users/nfrik/Documents/LAMMPS/work/couette_flow/hardyplus/hardyplus/hardycpp.cpp"
+                  timestampString = "417666048.529197"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "391"
+                  endingLineNumber = "391"
+                  offsetFromSymbolStart = "3461">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "hardyplus/hardycpp.cpp"
+            timestampString = "419826933.081317"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "394"
+            endingLineNumber = "394"
+            landmarkName = "hardycpp::getBodyHeadTail2Matrix(Eigen::MatrixXd &amp;m,double rcx)"
+            landmarkType = "5">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "hardycpp::getBodyHeadTail2Matrix(Eigen::Matrix&lt;double, -1, -1, 0, -1, -1&gt;&amp;, double)"
+                  moduleName = "hardyplus"
+                  urlString = "file:///Users/nfrik/Documents/LAMMPS/work/couette_flow/hardyplus/hardyplus/hardycpp.cpp"
+                  timestampString = "417665156.917021"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "394"
+                  endingLineNumber = "394"
+                  offsetFromSymbolStart = "3486">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "hardycpp::getBodyHeadTail2Matrix(Eigen::Matrix&lt;double, -1, -1, 0, -1, -1&gt;&amp;, double)"
+                  moduleName = "hardyplus"
+                  urlString = "file:///Users/nfrik/Documents/LAMMPS/work/couette_flow/hardyplus/hardyplus/hardycpp.cpp"
+                  timestampString = "417665156.917452"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "394"
+                  endingLineNumber = "394"
+                  offsetFromSymbolStart = "3533">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "hardycpp::getBodyHeadTail2Matrix(Eigen::Matrix&lt;double, -1, -1, 0, -1, -1&gt;&amp;, double)"
+                  moduleName = "hardyplus"
+                  urlString = "file:///Users/nfrik/Documents/LAMMPS/work/couette_flow/hardyplus/hardyplus/hardycpp.cpp"
+                  timestampString = "417665156.917801"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "394"
+                  endingLineNumber = "394"
+                  offsetFromSymbolStart = "3882">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "hardyplus/hardycpp.cpp"
+            timestampString = "419826933.081317"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "371"
+            endingLineNumber = "371"
+            landmarkName = "hardycpp::getBodyHeadTail2Matrix(Eigen::MatrixXd &amp;m,double rcx)"
+            landmarkType = "5">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "hardycpp::getBodyHeadTail2Matrix(Eigen::Matrix&lt;double, -1, -1, 0, -1, -1&gt;&amp;, double)"
+                  moduleName = "hardyplus"
+                  urlString = "file:///Users/nfrik/Documents/LAMMPS/work/couette_flow/hardyplus/hardyplus/hardycpp.cpp"
+                  timestampString = "417753100.682008"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "375"
+                  endingLineNumber = "375"
+                  offsetFromSymbolStart = "2141">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "hardycpp::getBodyHeadTail2Matrix(Eigen::Matrix&lt;double, -1, -1, 0, -1, -1&gt;&amp;, double)"
+                  moduleName = "hardyplus"
+                  urlString = "file:///Users/nfrik/Documents/LAMMPS/work/couette_flow/hardyplus/hardyplus/hardycpp.cpp"
+                  timestampString = "417753100.682249"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "375"
+                  endingLineNumber = "375"
+                  offsetFromSymbolStart = "2190">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "hardycpp::getBodyHeadTail2Matrix(Eigen::Matrix&lt;double, -1, -1, 0, -1, -1&gt;&amp;, double)"
+                  moduleName = "hardyplus"
+                  urlString = "file:///Users/nfrik/Documents/LAMMPS/work/couette_flow/hardyplus/hardyplus/hardycpp.cpp"
+                  timestampString = "417753100.682542"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "375"
+                  endingLineNumber = "375"
+                  offsetFromSymbolStart = "2225">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "hardyplus/hardycpp.cpp"
+            timestampString = "419826933.081317"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "397"
+            endingLineNumber = "397"
+            landmarkName = "hardycpp::getBodyHeadTail2Matrix(Eigen::MatrixXd &amp;m,double rcx)"
+            landmarkType = "5">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "hardycpp::getBodyHeadTail2Matrix(Eigen::Matrix&lt;double, -1, -1, 0, -1, -1&gt;&amp;, double)"
+                  moduleName = "hardyplus"
+                  urlString = "file:///Users/nfrik/Documents/LAMMPS/work/couette_flow/hardyplus/hardyplus/hardycpp.cpp"
+                  timestampString = "420328815.343357"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "399"
+                  endingLineNumber = "399"
+                  offsetFromSymbolStart = "1330">
+               </Location>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "hardycpp::getBodyHeadTail2Matrix(Eigen::Matrix&lt;double, -1, -1, 0, -1, -1&gt;&amp;, double)"
+                  moduleName = "hardyplus"
+                  urlString = "file:///Users/nfrik/Documents/LAMMPS/work/couette_flow/hardyplus/hardyplus/hardycpp.cpp"
+                  timestampString = "420328815.343574"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "399"
+                  endingLineNumber = "399"
+                  offsetFromSymbolStart = "3057">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "hardyplus/hardycpp.cpp"
+            timestampString = "419826933.081317"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "89"
+            endingLineNumber = "89"
+            landmarkName = "hardycpp::run(int time, int dargx, int dargy, int dargz)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "hardyplus/hardycpp.cpp"
+            timestampString = "419826933.081317"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "182"
+            endingLineNumber = "182"
+            landmarkName = "hardycpp::run(int time, int dargx, int dargy, int dargz)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "hardyplus/hardycpp.cpp"
+            timestampString = "419826933.081317"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "456"
+            endingLineNumber = "456"
+            landmarkName = "hardycpp::getOutsideAtoms(const Eigen::MatrixXd &amp;data, Eigen::MatrixXd &amp;atoms, bool scaled, double xmin, double xmax, double ymin, double ymax, double zmin, double zmax, double rcx, double rcy, double rcz)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "hardyplus/main.cpp"
+            timestampString = "420328036.684971"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "38"
+            endingLineNumber = "38"
+            landmarkName = "test()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "hardyplus/main.cpp"
+            timestampString = "420328808.991435"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "123"
+            endingLineNumber = "123"
+            landmarkName = "compute(int argc, char * argv[])"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

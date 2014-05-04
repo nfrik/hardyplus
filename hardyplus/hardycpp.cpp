@@ -15,7 +15,6 @@
 #include <stdlib.h>
 #include <math.h>
 #include <Eigen/Dense>
-#include "interactions.h"
 #include "plotter.h"
 
 using namespace Eigen;
@@ -33,12 +32,11 @@ hardycpp::hardycpp(const char *path){
     this->workFilePath=(char *)path;
     //this->readRawDataFromFile(path);//read file to wdata
     this->openWorkFile();
-    
+
     //we specify current folder path by truncating file name
     folderpath=path;
     unsigned long last=folderpath.find_last_of("/\\");
     folderpath=folderpath.substr(0,last+1);
-    
 }
 
 hardycpp::~hardycpp(){
@@ -92,12 +90,16 @@ void hardycpp::run(int time, int dargx, int dargy, int dargz){
         cout << "Something went wrong with work file in hardy::run(...) ";
     }
     
+    data.setConstant(0);
+    //extract from wdata[][] -> data
+    getBodyHeadTail2Matrix(data, rcx);
+    
+    hardycpp::printMat2File(data, folderpath+"sample_m.txt");
     
     for (int i=1; i<=dargy; i++) {
         for (int j=1; j<=dargx; j++) {
             for (int k=1; k<=dargz; k++) {
                 
-                data.setConstant(0);
                 U.setConstant(0);
                 Fx.setConstant(0); Fy.setConstant(0); Fz.setConstant(0);
                 xij.setConstant(0); yij.setConstant(0); zij.setConstant(0);
@@ -133,12 +135,10 @@ void hardycpp::run(int time, int dargx, int dargy, int dargz){
                 //vector<int> inatoms=findindxs(true, time, sxlo, sxhi, sylo, syhi, szlo, szhi);
                 //vector<int> outatoms=findindxs(true, time, sxlo-rcx, sxhi+rcx, sylo-rcy, syhi+rcy, szlo-rcz, szlo+rcz);
 
-                //extract from wdata[][] -> data
-                getBodyHeadTail2Matrix(data, rcx);
                 getInsideAtoms(data, inatoms, true, sxlo, sxhi, sylo, syhi, -INFINITY, INFINITY);
                 getOutsideAtoms(data, outatoms, true, sxlo, sxhi, sylo, syhi, -INFINITY, INFINITY, rcx, rcy, rcz);
                 
-                neighborList(inatoms, outatoms, U, Fx, Fy, Fz, xij, yij, zij, lam);
+                neighborList(inatoms, outatoms, U, Fx, Fy, Fz, xij, yij, zij, lam,rc);
                 
                 tN=inatoms.col(10).size();   //total number of particles
                 tmass=inatoms.col(10).sum(); //total mass
@@ -155,21 +155,19 @@ void hardycpp::run(int time, int dargx, int dargy, int dargz){
                 stresspotential(Fx, Fy, Fz, xij, yij, zij, lam, vol, Sv);
                 
                 output(i-1,j-1)=-(Sv(0,1)+Sk(0,1));
-
                 
-                
-//                printMat2File(U, string("Udat_i")+NumberToString(i)+string("_j_")+NumberToString(j)+string(".txt"));
-//                printMat2File(Fx, string("Fxdat_i")+NumberToString(i)+string("_j_")+NumberToString(j)+string(".txt"));
-//                printMat2File(Fy, string("Fydat_i")+NumberToString(i)+string("_j_")+NumberToString(j)+string(".txt"));
-//                printMat2File(Fz, string("Fzdat_i")+NumberToString(i)+string("_j_")+NumberToString(j)+string(".txt"));
-//                printMat2File(xij, string("Xijdat_i")+NumberToString(i)+string("_j_")+NumberToString(j)+string(".txt"));
-//                printMat2File(yij, string("Yijdat_i")+NumberToString(i)+string("_j_")+NumberToString(j)+string(".txt"));
-//                printMat2File(zij, string("Zijdat_i")+NumberToString(i)+string("_j_")+NumberToString(j)+string(".txt"));
-//                printMat2File(lam, string("Lamdat_i")+NumberToString(i)+string("_j_")+NumberToString(j)+string(".txt"));
-//                printMat2File(inatoms, string("InAtomsdat_i")+NumberToString(i)+string("_j_")+NumberToString(j)+string(".txt"));
-//                printMat2File(outatoms, string("OutAtomsdat_i")+NumberToString(i)+string("_j_")+NumberToString(j)+string(".txt"));
-//                printMat2File(Sk, string("Skdat_i")+NumberToString(i)+string("_j_")+NumberToString(j)+string(".txt"));
-//                printMat2File(Sv, string("Svdat_i")+NumberToString(i)+string("_j_")+NumberToString(j)+string(".txt"));
+                printMat2File(U, folderpath+string("Udat_i")+NumberToString(i)+string("_j_")+NumberToString(j)+string(".txt"));
+                printMat2File(Fx, folderpath+string("Fxdat_i")+NumberToString(i)+string("_j_")+NumberToString(j)+string(".txt"));
+                printMat2File(Fy, folderpath+string("Fydat_i")+NumberToString(i)+string("_j_")+NumberToString(j)+string(".txt"));
+                printMat2File(Fz, folderpath+string("Fzdat_i")+NumberToString(i)+string("_j_")+NumberToString(j)+string(".txt"));
+                printMat2File(xij, folderpath+string("Xijdat_i")+NumberToString(i)+string("_j_")+NumberToString(j)+string(".txt"));
+                printMat2File(yij, folderpath+string("Yijdat_i")+NumberToString(i)+string("_j_")+NumberToString(j)+string(".txt"));
+                printMat2File(zij, folderpath+string("Zijdat_i")+NumberToString(i)+string("_j_")+NumberToString(j)+string(".txt"));
+                printMat2File(lam, folderpath+string("Lamdat_i")+NumberToString(i)+string("_j_")+NumberToString(j)+string(".txt"));
+                printMat2File(inatoms, folderpath+string("InAtomsdat_i")+NumberToString(i)+string("_j_")+NumberToString(j)+string(".txt"));
+                printMat2File(outatoms, folderpath+string("OutAtomsdat_i")+NumberToString(i)+string("_j_")+NumberToString(j)+string(".txt"));
+                printMat2File(Sk, folderpath+string("Skdat_i")+NumberToString(i)+string("_j_")+NumberToString(j)+string(".txt"));
+                printMat2File(Sv, folderpath+string("Svdat_i")+NumberToString(i)+string("_j_")+NumberToString(j)+string(".txt"));
                 
                 //cout<<"Pxy for cell["<<i<<"]["<<j<<"] = "<<(Sk+Sv).row(0).col(0)<<endl;
                 
@@ -225,7 +223,7 @@ void hardycpp::openWorkFile(){
         }
     }
     
-    sdata.nframes=flines%sdata.natoms;
+    sdata.nframes=flines/sdata.natoms;
     
     //resize our matrix for
     this->wdata.resize(sdata.natoms); // set height
@@ -242,13 +240,15 @@ void hardycpp::closeWorkFile(){
 bool hardycpp::readNextFrame(){
     
     string line;
-    for (int i=0; i<sdata.natoms; i++) {
+    int i=0;
+    for (i=0; i<sdata.natoms; i++) {
         if (!getline(this->workFileStream, line)) {
             cout << "EOF or something is wrong";
             return false;
         }
         sscanf(line.c_str(), "%lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf",&wdata[i][0],&wdata[i][1],&wdata[i][2],&wdata[i][3],&wdata[i][4],&wdata[i][5],&wdata[i][6],&wdata[i][7],&wdata[i][8],&wdata[i][9],&wdata[i][10],&wdata[i][11]);
     }
+    cout << "Finished reading " << wdata[i-1][11]<<"'th frame";
     return true;
 }
 
@@ -368,7 +368,7 @@ void hardycpp::getBodyHeadTail2Matrix(Eigen::MatrixXd &m,double rcx){
     }
 
     
-    m.resize(sdata.natoms, 11);
+    m.resize(sdata.natoms+indexHead.size()+indexTail.size(), 11);
     
     int j=0;
     
@@ -465,7 +465,7 @@ void hardycpp::getOutsideAtoms(const Eigen::MatrixXd &data, Eigen::MatrixXd &ato
     
 }
 
-void hardycpp::neighborList(const Eigen::MatrixXd &InsidersIn, const Eigen::MatrixXd &OutsidersIn, Eigen::MatrixXd &phiOut, Eigen::MatrixXd &FxOut, Eigen::MatrixXd &FyOut, Eigen::MatrixXd &FzOut, Eigen::MatrixXd &xijOut, Eigen::MatrixXd &yijOut, Eigen::MatrixXd &zijOut, Eigen::MatrixXd &lamOut){
+void hardycpp::neighborList(const Eigen::MatrixXd &InsidersIn, const Eigen::MatrixXd &OutsidersIn, Eigen::MatrixXd &phiOut, Eigen::MatrixXd &FxOut, Eigen::MatrixXd &FyOut, Eigen::MatrixXd &FzOut, Eigen::MatrixXd &xijOut, Eigen::MatrixXd &yijOut, Eigen::MatrixXd &zijOut, Eigen::MatrixXd &lamOut, double rc){
 
     
     int NInsiders=InsidersIn.col(1).size();
@@ -490,13 +490,12 @@ void hardycpp::neighborList(const Eigen::MatrixXd &InsidersIn, const Eigen::Matr
     zijOut.setConstant(0);
     lamOut.setConstant(0);
     
-    double rc=1.12246;//LJ cutoff potential
+//    double rc=2.2;//LJ cutoff potential
     
     Vector3d A(0,0,0);
     Vector3d B(0,0,0);
     Vector3d f(0,0,0);
     Vector3d r(0,0,0);
-    interactions interact;
     
     //calculate interactions within the box
     for (int i=0; i<NInsiders; i++) {
@@ -512,7 +511,6 @@ void hardycpp::neighborList(const Eigen::MatrixXd &InsidersIn, const Eigen::Matr
             xijOut(i,j)=r(0);
             yijOut(i,j)=r(1);
             zijOut(i,j)=r(2);
-            
             lamOut(i,j)=1;
         }
     }
@@ -558,6 +556,76 @@ void hardycpp::neighborList(const Eigen::MatrixXd &InsidersIn, const Eigen::Matr
      yijOut=(yijOut-yijOut.transpose()).eval();
      zijOut=(zijOut-zijOut.transpose()).eval();
      lamOut=(lamOut+lamOut.transpose()).eval();
+}
+
+double hardycpp::lambda(const Eigen::MatrixXd &iAt,const Eigen::MatrixXd &oAt,const Eigen::MatrixXd &boxDim){
+    
+    double xlo=boxDim(0,0);
+    double xhi=boxDim(0,1);
+    double ylo=boxDim(1,0);
+    double yhi=boxDim(1,1);
+    double mx=0,my=0,mz=0,lam=0,k=0,b=0;
+    double ym1=0, xm1=0, ym2=0, xm2=0,ym3=0, xm3=0, ym4=0, xm4=0;
+    double eps=numeric_limits<float>::epsilon();
+    
+    int l=0;
+    
+    //%check for absolute vertical and horizontal
+    if (abs(iAt(0)-oAt(0))<eps) {
+        if (oAt(1)>=yhi) {
+            mx=iAt(0);
+            my=yhi;
+            lam=abs(yhi-iAt(1))/abs(iAt(1)-oAt(1));
+        }else if(oAt(1)<=ylo){
+            mx=iAt(0);
+            my=ylo;
+            lam=abs(ylo-iAt(1))/abs(iAt(1)-oAt(1));
+        }
+        l=1;
+    }
+
+
+    if (abs(iAt(1)-oAt(1))<eps) {
+        if (oAt(0)<=xhi) {
+            mx=xhi;
+            my=oAt(1);
+            lam=abs(xhi-iAt(0))/abs(iAt(0)-oAt(0));
+        }else if(oAt(0)<=xlo){
+            mx=xlo;
+            my=oAt(1);
+            lam=abs(xlo-iAt(0))/abs(iAt(0)-oAt(0));
+        }
+        l=1;
+    }
+
+    if(l<1){
+        k=(oAt(1)-iAt(1))/(oAt(0)-iAt(0));
+        b=oAt(1)-k*oAt(0);
+        
+    }
+    
+    //%find points where wall intersects with A-B line
+    ym1=k*xlo+b;
+    xm1=xlo;
+    ym2=ylo;
+    xm2=(ylo-b)/k;
+    ym3=yhi;
+    xm3=(yhi-b)/k;
+    ym4=k*xhi+b;
+    xm4=xhi;
+    
+    
+    if(interact.isPMemberOfRectAB(xm1, ym1, iAt(0), iAt(1), oAt(0), oAt(1))){
+        return interact.lam(iAt(0), iAt(1), xm1, ym1, oAt(0), oAt(1));
+    }else if(interact.isPMemberOfRectAB(xm2, ym2, iAt(0), iAt(1), oAt(0), oAt(1))){
+        return interact.lam(iAt(0), iAt(1), xm2, ym2, oAt(0), oAt(1));
+    }else if(interact.isPMemberOfRectAB(xm3, ym3, iAt(0), iAt(1), oAt(0), oAt(1))){
+        return interact.lam(iAt(0), iAt(1), xm3, ym3, oAt(0), oAt(1));
+    }else if(interact.isPMemberOfRectAB(xm4, ym4, iAt(0), iAt(1), oAt(0), oAt(1))){
+        return interact.lam(iAt(0), iAt(1), xm4, ym4, oAt(0), oAt(1));
+    }else{
+        return 1.0;
+    }
 }
 
 void hardycpp::stresskinetic(const Eigen::MatrixXd &InsidersIn, double avvxIn, double avvyIn, double avvzIn, double volIn, Eigen::MatrixXd &SkOut){

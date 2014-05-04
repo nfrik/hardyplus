@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>AA0649CB-D902-45F2-9CF3-D758DC195254</string>
+	<key>IDESourceControlProjectName</key>
+	<string>hardyplus</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>E249529B-66EB-40E4-9CBB-B28F2868CA80</key>
+		<string>https://github.com/nfrik/hardyplus.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>hardyplus.xcodeproj/project.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>E249529B-66EB-40E4-9CBB-B28F2868CA80</key>
+		<string>../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/nfrik/hardyplus.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>110</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>E249529B-66EB-40E4-9CBB-B28F2868CA80</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>E249529B-66EB-40E4-9CBB-B28F2868CA80</string>
+			<key>IDESourceControlWCCName</key>
+			<string>hardyplus</string>
+		</dict>
+	</array>
+</dict>
+</plist>

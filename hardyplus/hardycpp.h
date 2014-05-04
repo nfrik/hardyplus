@@ -13,6 +13,7 @@
 #include <vector>
 #include <fstream>
 #include <Eigen/Dense>
+#include "interactions.h"
 
 #endif /* defined(__hardyplus__hardycpp__) */
 
@@ -27,6 +28,7 @@ struct simdata{
 
 class hardycpp{
 public:
+    interactions interact;
     //specify path and starting/ending t0/t1 parameters
     hardycpp(const char *path);
     ~ hardycpp();
@@ -43,7 +45,7 @@ public:
     void getInsideAtoms(const Eigen::MatrixXd &data, Eigen::MatrixXd &atoms, bool scaled, double xmin, double xmax, double ymin, double ymax, double zmin, double zmax);
     void getOutsideAtoms(const Eigen::MatrixXd &data, Eigen::MatrixXd &atoms, bool scaled, double xmin, double xmax, double ymin, double ymax, double zmin, double zmax, double rcx, double rcy, double rcz);
     void neighborList(const Eigen::MatrixXd &InsidersIn, const Eigen::MatrixXd &OutsidersIn, Eigen::MatrixXd &phiOut, Eigen::MatrixXd &FxOut, Eigen::MatrixXd &FyOut, Eigen::MatrixXd &FzOut,
-                      Eigen::MatrixXd &xijOut, Eigen::MatrixXd &yijOut, Eigen::MatrixXd &zijOut, Eigen::MatrixXd &lamOut);
+                      Eigen::MatrixXd &xijOut, Eigen::MatrixXd &yijOut, Eigen::MatrixXd &zijOut, Eigen::MatrixXd &lamOut, double rc);
     void stresskinetic(const Eigen::MatrixXd &InsidersIn, double avvxIn, double avvyIn, double avvzIn, double volIn, Eigen::MatrixXd &SkOut);
     void stresspotential(const Eigen::MatrixXd &FxIn, const Eigen::MatrixXd &FyIn, const Eigen::MatrixXd &FzIn,
                    const Eigen::MatrixXd &xijIn, const Eigen::MatrixXd &yijIn, const Eigen::MatrixXd &zijIn, const Eigen::MatrixXd &lamIn, double volIn, Eigen::MatrixXd &SpOut);
@@ -51,7 +53,7 @@ public:
     void plot(const double *xData, const double *yData,int dataSize);
     void printMat2File(const Eigen::MatrixXd &m, string filename);
     
-    
+    double lambda(const Eigen::MatrixXd &inAtoms,const Eigen::MatrixXd &outAtoms,const Eigen::MatrixXd &boxDim);
     
 private:
     simdata sdata;

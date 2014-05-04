@@ -32,6 +32,7 @@ double interactions::LJPotential(const Eigen::Vector3d A, const Eigen::Vector3d 
     return LJPotential(A, B, rc, 1.0, 1.0);
 }
 
+
 Eigen::Vector3d interactions::LJForce(const Eigen::Vector3d A, const Eigen::Vector3d B, double rc, double sigma, double epsilon){
 
 //    Eigen::Vector3d r=Eigen::sqrt(sum(((A-B).^2)'));
@@ -43,6 +44,7 @@ Eigen::Vector3d interactions::LJForce(const Eigen::Vector3d A, const Eigen::Vect
     return f;
 }
 
+
 double interactions::LJPotential(const Eigen::Vector3d A, const Eigen::Vector3d B, double rc, double sigma, double epsilon){
     
     double r=sqrt((A-B).array().square().sum());
@@ -53,6 +55,17 @@ double interactions::LJPotential(const Eigen::Vector3d A, const Eigen::Vector3d 
 }
 
 
+bool interactions::isPMemberOfRectAB(double x, double y, double x0, double y0, double x1, double y1){
+    if(x1>x0)
+        swap(x0, x1);
+    if(y1>y0)
+        swap(y0,y1);
+    return (x<=x1)&&(x>=x0)&&(y<=y1)&&(y>=y0);
+}
+
+double interactions::lam(double x0,double y0,double x1, double y1, double x2, double y2){
+    return sqrt((x0-x1)*(x0-x1)+(y0-y1)*(y0-y1))/sqrt((x0-x2)*(x0-x2)+(y0-y2)*(y0-y2));
+}
 
 // NEED TO BE TESTED!!!!!
 //
