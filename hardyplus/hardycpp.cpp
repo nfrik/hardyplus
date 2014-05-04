@@ -29,6 +29,8 @@ string NumberToString ( T Number )
 
 hardycpp::hardycpp(const char *path){
     
+    this->sdata.timestep=1000;
+    this->sdata.nframes=0;
     this->workFilePath=(char *)path;
     //this->readRawDataFromFile(path);//read file to wdata
     this->openWorkFile();

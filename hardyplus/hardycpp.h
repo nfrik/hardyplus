@@ -21,9 +21,9 @@ using namespace std;
 
 struct simdata{
     int natoms; //number of atoms
-    int timestep=1000; //timestep of output data
+    int timestep; //timestep of output data
     double xmin,xmax,ymin,ymax,zmin,zmax;
-    int nframes=0;
+    int nframes;
 };
 
 class hardycpp{
@@ -58,12 +58,12 @@ public:
 private:
     simdata sdata;
     void readRawDataFromFile(const char *str);
-    vector<vector<double>> wdata; //whole data
+    vector<vector<double> > wdata; //whole data
     vector<int> inatomsindx;
     vector<int> outatomsindx;
     string folderpath;
     
-    char *workFilePath=NULL;
+    char *workFilePath;
     ifstream workFileStream;
     void openWorkFile();
     void closeWorkFile();
