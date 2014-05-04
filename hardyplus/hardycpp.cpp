@@ -15,7 +15,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <Eigen/Dense>
-#include "plotter.h"
+//#include "plotter.h"
 
 using namespace Eigen;
 
@@ -80,7 +80,7 @@ void hardycpp::run(int time, int dargx, int dargy, int dargz){
     //1***************2%     %2***************1%
     //---------------------------
     
-    plotter plotter;
+    //plotter plotter;
     
     MatrixXd data, U, Fx, Fy, Fz, xij, yij, zij, lam, inatoms, outatoms, Sk, Sv, output;
     
@@ -727,7 +727,7 @@ void hardycpp::test(){
 }
 
 void hardycpp::printMat2File(const Eigen::MatrixXd &m, string filename){
-    ofstream matoutstr(filename);
+    ofstream matoutstr(filename.c_str());
     matoutstr<<m<<endl;
     matoutstr.close();
 }

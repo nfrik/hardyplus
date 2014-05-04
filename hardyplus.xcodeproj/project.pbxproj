@@ -11,7 +11,6 @@
 		4D2503A317C5AA7600AA1A69 /* hardyplus.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4D2503A217C5AA7600AA1A69 /* hardyplus.1 */; };
 		4D2503AB17C5AAE300AA1A69 /* hardycpp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D2503A917C5AAE300AA1A69 /* hardycpp.cpp */; };
 		4D6A031E17DF638900AED203 /* interactions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D6A031C17DF638900AED203 /* interactions.cpp */; };
-		4D6A032117E12F6A00AED203 /* plotter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D6A031F17E12F6A00AED203 /* plotter.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -181,7 +180,6 @@
 				4D2503A117C5AA7600AA1A69 /* main.cpp in Sources */,
 				4D2503AB17C5AAE300AA1A69 /* hardycpp.cpp in Sources */,
 				4D6A031E17DF638900AED203 /* interactions.cpp in Sources */,
-				4D6A032117E12F6A00AED203 /* plotter.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
