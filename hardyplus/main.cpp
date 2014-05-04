@@ -10,7 +10,7 @@
 #include <string>
 #include <algorithm>
 #include <math.h>
-#include "hardycpp.cpp"
+#include "hardycpp.h"
 #include <Eigen/Dense>
 //#include "plotter.h"
 #include <unistd.h>
