@@ -71,7 +71,7 @@ int main(int argc, char * argv[])
         //printf("Command received with arguments: %s %d %d %d %d %d %s \n",argv[0],nx,ny,nz,t0,t1,cwf);
         printf("Reading file: %s \n",cwf);
         
-        d = new typename hardycpp::hardycpp(cwf);
+        d = new typename ::hardycpp::hardycpp(cwf);
         for (int i=t0; i<=t1; i+=1000) {
             cout<<"Run: "<<i<<endl;
             d->run(i, nx, ny, nz);
@@ -85,7 +85,7 @@ int main(int argc, char * argv[])
         nx=20;
         ny=10;
         nz=1;
-        d = new typename hardycpp::hardycpp("/Users/nfrik/Documents/LAMMPS/work/01262014/ber2nh_02132014/procedural_test/flow.berendsen-nosehoover-wide.xtx");
+        d = new typename ::hardycpp::hardycpp("/Users/nfrik/Documents/LAMMPS/work/01262014/ber2nh_02132014/procedural_test/flow.berendsen-nosehoover-wide.xtx");
         d->run(t0, nx, ny, nz);
     }
     
